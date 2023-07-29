@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 const port:number = 3000
 
 // given URI allows connecting to a mongoDB database
-const dbURI:string = "mongodb+srv://mateus-po:1234@cluster0.4hb7ewh.mongodb.net/?retryWrites=true&w=majority"
+const dbURI:string = ""
 
 
 
