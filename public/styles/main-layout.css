@@ -1,0 +1,93 @@
+body {
+    margin: none;
+    background-image: url(/img/paws-background.avif);
+    background-size: 25%;
+    min-height: 1vh;
+    font-family: 'Fira Code', monospace;
+    font-family: 'Lato', sans-serif;
+}
+#Logo {
+    text-align: center;
+    padding-left: 150px;
+    padding-bottom: 30px;
+    padding-top: 20px;
+}
+#LogoImg {
+    height: 350px;
+    z-index: -1;
+    user-select: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+}
+#Header {
+    min-height: 170px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    text-align: right;
+}
+#Container {
+    display: flex;
+    min-height: 200px;
+    align-self: center;
+}
+#Left, #Middle, #Right {
+    background-color:rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    margin: 5px;
+    min-height: 100px;
+    padding: 15px;
+    height: fit-content;
+}
+#Left {
+    width: calc(20% - 40px);
+}
+#Middle {
+    width: calc(60% - 40px);
+}
+#Right {
+    width: calc(20% - 40px);
+}
+#Searchbar {
+    display: flex;
+    justify-content: space-evenly;
+}
+#Searchbar > input {
+    font-size: 16px;
+    padding: 3px;
+    margin: 3px;
+    width: 300px;
+}
+#Searchbar >  img {
+    height: 25px;
+    margin-top: 4px;
+    padding: 1px;
+}
+#Searchbar >  img:hover {
+    cursor: pointer;
+}
+#Auth > a {
+    display: inline-block;
+    margin: 3px;
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+}
+#Auth > a:visited {
+    color: black;
+}
+#Left > a {
+    color: black;
+    text-decoration: none;
+}
+.nav-option {
+    padding: 5px;
+    width: calc(100% - 10px);
+    border-radius: 5px;
+}
+.nav-option:hover {
+    background-color: rgb(255, 236, 250);
+}
