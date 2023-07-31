@@ -1,0 +1,63 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+#Containter > a {
+    text-decoration: none;
+    color: black;
+}
+#Container > img {
+    display: inline;
+    height: 15px;
+}
+input {
+    width: 350px;
+    font-size: 17px;
+    margin-top: 7px;
+    margin-bottom: 7px;
+    border-color: rgba(254,220,219,255);
+}
+button {
+    width: 100%;
+    vertical-align:middle;
+    font-size: 17px;
+}
+button:hover {
+    background-color: rgb(247, 192, 242);
+    border: 2px solid rgba(254,220,219,255);
+}
+#Footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+}
+#Container {
+    min-width: 350px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 20px;
+    text-align: center;
+    padding: 20px;
+    margin-bottom: 10%;
+}
+#LogoImg {
+    height: 350px;
+    user-select: none;
+    z-index: -1;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+}
+#Back {
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding: 20px;
+}
+#Back > a {
+    color: black;
+    text-decoration: none;
+}
+

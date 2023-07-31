@@ -9,7 +9,7 @@ const port:number = 3000
 const dbURI:string = ""
 
 
-
+const authRouter = require("./routes/authRouter")
 const articlesRouter = require("./routes/articlesRouter")
 
 
@@ -20,7 +20,7 @@ app.use(express.static('public'))
 
 app.set("view engine", "ejs")
 
-
+app.use('/auth', authRouter);
 app.use('/', articlesRouter);
 
 

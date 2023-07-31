@@ -1,35 +1,15 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/styles/main-layout.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Lato:ital,wght@0,300;0,700;1,300;1,700&display=swap" rel="stylesheet">
+    <%- include('partials/head.ejs') %>
+    <link rel="stylesheet" href="styles/article-layout.css">
     <title>Gatopedia</title>
+    <link rel="icon" type="image/x-icon" href="/img/icon-paw.png">
 </head>
 <body>
 
 
-    <img src="/img/gatopedia-logo.png" alt="logo" id="LogoImg">
-    <div id="Header">
-        <a href="/" style="color: black; text-decoration: none;">
-        <div id="Logo">
-            <h1>Gatopedia</h1>
-            <h4>Wszystko o kotkach</h4>
-        </div>
-        </a>
-        <div id="Searchbar">
-            <input type="text" placeholder="Wyszukaj">
-            <img src="/img/icon-search.png" alt="Search icon">
-
-        </div>
-        <div id="Auth">
-            <a href="/login">Zaloguj się</a>
-            <a href="/signup">Załóż konto</a>
-        </div>
-    </div>
+    <%- include('partials/header.ejs') %>
 
     <div id="Container">
 
@@ -67,11 +47,7 @@ Pellentesque at gravida tortor, in sagittis ligula. Donec eget turpis et nisi gr
 
     </div>
 
-    <div id="Footer">
-        Witryna stworzona przez: <a href="https://github.com/mateus-po">mateus-po<br>
-            <a target="_blank" href="https://icons8.com/icon/132/search">Search</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
-        </a>
-    </div>
+<%- include('partials/footer.ejs') %>
 
 
 
