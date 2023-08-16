@@ -1,10 +1,11 @@
 "use strict";
+// this file contains routes used in user authentication
 var express = require('express');
 var router = express.Router();
-router.get('/login', function (req, res, next) {
-    res.render("login");
-});
-router.get('/signup', function (req, res, next) {
-    res.render("signup");
-});
+const authController = require('../controllers/authController');
+router.get('/login', authController.login_get);
+router.get('/signup', authController.signup_get);
+router.post('/login', authController.login_post);
+router.post('/signup', authController.signup_post);
+router.get('/logout', authController.logout_get);
 module.exports = router;

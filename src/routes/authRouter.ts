@@ -1,11 +1,15 @@
+// this file contains routes used in user authentication
+
 var express = require('express')
 var router = express.Router();
+const authController = require('../controllers/authController')
 
-router.get('/login', function(req:any, res:any, next:any) {
-    res.render("login");
-  });
-router.get('/signup', function(req:any, res:any, next:any) {
-    res.render("signup");
-  });
+router.get('/login', authController.login_get)
+router.get('/signup', authController.signup_get)
+
+router.post('/login', authController.login_post)
+router.post('/signup', authController.signup_post)
+
+router.get('/logout', authController.logout_get)
 
 module.exports = router

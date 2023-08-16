@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <%- include('../partials/head.ejs') %>
+    <link rel="stylesheet" href="/styles/auth-layout.css">
+    <title>Sign up to Gatopedia</title>
+    <link rel="icon" type="image/x-icon" href="/img/icon-paw.png">
+</head>
+<body>
+<img title="Powrót na stronę główną" src="/img/gatopedia-logo.png" alt="logo" id="LogoImg">
+
+
+<div id="Container">
+    <h1>Sign up</h1>
+    <form>
+        <label for="email">E-mail address:</label><br>
+        <input type="email" name="email" required title="Podaj poprawny adres e-mail"><br>
+        <label for="nickname">Nickname:</label><br>
+        <input type="text" name="nickname" required><br>
+        <label for="password">Password:</label><br>
+        <input type="password" name="password" required><br>
+        <label for="passwd-again">Password again:</label><br>
+        <input type="password" name="passwordAgain" required><br>
+        <div id="Errors"></div>
+        <button>Sign up</button>
+    </form>
+</div>
+
+<script src="/scripts/signup.js"></script>
+
+
+
+<div id="Back">
+    <a href="/">
+        Go back to the main page
+    </a>
+</div>
+
+<div id="Footer">
+    Page was created by: <a href="https://github.com/mateus-po">mateus-po<br>
+</div>
+
+</body>
+
+</html>

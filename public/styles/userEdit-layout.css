@@ -1,0 +1,35 @@
+#Container {
+    display: flex;
+    justify-content: center;
+}
+#Middle {
+    min-width: 400px;
+}
+.edit-icon {
+    margin-left: 5px;
+    height: 15px;
+    cursor: pointer;
+}
+p {
+    display: inline;
+}
+.edit-option > input, .edit-option > button, .edit-option > label, .edit-option > textarea {
+    display: none;
+}
+.edit-option > input {
+    min-width: 300px;
+}
+.error-box {
+    color: red;
+    font-weight: bold;
+    font-size: 13px;
+}
+.edit-option > textarea {
+    width: 100%;
+    max-width: 700px;
+    resize: none;
+    height: 70px;
+}
+.edit-option > span {
+    white-space: pre-wrap;
+}

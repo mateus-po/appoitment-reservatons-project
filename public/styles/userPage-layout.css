@@ -1,0 +1,25 @@
+#Avatar {
+    width: 100%;
+}
+.article-snippet {
+    padding: 10px;
+    border-radius: 10px;
+}
+.article-snippet:hover {
+    background-color: rgba(255, 236, 250,0.6);
+}
+#Right > a {
+    color: black;
+    text-decoration: none;
+    display: inline-block;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+}
+#Right > a:hover {
+    background-color: rgba(255, 236, 250,0.6);
+}
+#Description {
+    white-space: pre-wrap;
+    text-indent: 0px;
+}

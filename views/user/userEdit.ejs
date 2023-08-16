@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head.ejs') %>
+    <link rel="stylesheet" href="/styles/article-layout.css">
+    <link rel="stylesheet" href="/styles/userEdit-layout.css">
+    <title>Edit your account</title>
+    <link rel="icon" type="image/x-icon" href="/img/icon-paw.png">
+</head>
+<body>
+
+
+    <%- include('../partials/header.ejs') %>
+
+    <div id="Container">
+
+
+        <div id="Middle">
+            <h3>Edit your accout</h3>
+            <h5>E-mail:</h5>
+
+            <div id="Email" class="edit-option">
+                <div id="EmailErrorBox" class="error-box"></div>
+                <span><%= loggedUser.email %></span>
+                <img class="edit-icon" src="/img/icon-edit.png" alt="edit icon" onclick="inputOn(this.parentElement)">
+                <input type="email" value="<%= loggedUser.email %>" required>
+                <button id="SaveEmail">Save</button>
+                <button onclick="inputOff(this.parentElement)">Cancel</button>
+            </div>
+
+            <h5>Nickname:</h5>
+            <div id="Nickname" class="edit-option">
+                <div id="NicknameErrorBox" class="error-box"></div>
+                <span><%= loggedUser.nickname %></span>
+                <img class="edit-icon" src="/img/icon-edit.png" alt="edit icon" onclick="inputOn(this.parentElement)">
+                <input type="text" value="<%= loggedUser.nickname %>" required>
+                <button id="SaveNickname">Save</button>
+                <button onclick="inputOff(this.parentElement)">Cancel</button>
+            </div>
+
+            <h5>Description:</h5>
+            <div id="Description" class="edit-option">
+                <div id="DescriptionErrorBox" class="error-box"></div>
+                <span><%= loggedUser.description %></span>
+                <img class="edit-icon" src="/img/icon-edit.png" alt="edit icon" onclick="inputOn(this.parentElement)">
+                <textarea><%= loggedUser.description %></textarea>
+                <button id="SaveDescription">Save</button>
+                <button onclick="inputOff(this.parentElement)">Cancel</button>
+            </div>
+
+            <h5>Change password:<img class="edit-icon" src="/img/icon-edit.png" alt="edit icon" onclick="passwordInputOn()"></h5>
+            <div id="Password" class="edit-option">
+                <div id="PasswordErrorBox" class="error-box"></div><br>
+                <label for="currentPassword">Current Password: </label> <br>
+                <input type="password" name="currentPassword" id="CurrentPassword" required> <br>
+                <label for="newPassword">New Password: </label> <br>
+                <input type="password" name="newPassword" id="NewPassword" required> <br>
+                <label for="newPasswordAgain">New Password Again: </label> <br>
+                <input type="password" name="newPasswordAgain" id="NewPasswordAgain" required> <br>
+                <button id="SavePassword">Change password</button>
+                <button onclick="passwordInputOff()">Cancel</button>
+            </div>
+
+
+
+           
+        </div>
+
+        <script src="/scripts/userEdit.js" onload="passwordInputOff()"></script>
+
+
+    </div>
+
+<%- include('../partials/footer.ejs') %>
+<a target="_blank" href="https://icons8.com/icon/49/edit">Edit</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+
+
+</body>
+</html>
