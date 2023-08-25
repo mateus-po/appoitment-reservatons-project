@@ -27,6 +27,7 @@
     display: flex;
     min-height: 200px;
     align-self: center;
+    flex-wrap: wrap;
 }
 #Left, #Middle, #Right {
     background-color:rgba(255, 255, 255, 0.8);
@@ -63,13 +64,18 @@
 #Searchbar >  img:hover {
     cursor: pointer;
 }
-#Auth > a {
+
+#Auth > .auth-option {
     display: inline-block;
     margin: 3px;
     color: black;
     text-decoration: none;
     font-weight: bold;
     margin: 10px;
+}
+#Auth > a {
+    color: black;
+    text-decoration: none;
 }
 #Left > a {
     color: black;
@@ -83,3 +89,41 @@
 .nav-option:hover {
     background-color: rgb(255, 236, 250);
 }
+@media screen and (max-width: 1000px) {
+    #Left {
+        width: calc(100% - 40px);
+        min-height: 0px;
+        display: flex;
+        justify-content: space-evenly;
+    }
+    #Left > a {
+        display: inline-block;
+    } 
+    #Middle {
+        width: calc(70% - 40px);
+    }
+    #Right {
+        width: calc(30% - 40px);
+    }
+  }
+
+  @media screen and (max-width: 750px) {
+    #Left {
+        width: calc(100% - 40px);
+        display: block;
+        order: 1;
+    }
+    #Left > a {
+        display: block;
+        text-align: center;
+    } 
+    #Middle {
+        order: 3;
+        width: calc(100% - 40px);
+    }
+    #Right {
+        order: 2;
+        width: calc(100% - 40px);
+    }
+
+  }

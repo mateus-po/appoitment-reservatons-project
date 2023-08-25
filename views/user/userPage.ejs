@@ -22,6 +22,7 @@
             <a href="/"><div class="nav-option">Random article</div></a>
         </div>
         <div id="Middle">
+            <a href="/article/new" id="Article-Add"> + Add a new article</a>
             <h1>Recently edited articles:</h1>
             <div class="article-snippet">
                 <h3>Some article</h3>
@@ -53,7 +54,12 @@
             <% if (loggedUser && loggedUser.id == user.id) { %>
                 <a href="/users/edit">Edit account</a>
             <% } %>
-            <img id="Avatar" src="https://www.w3schools.com/howto/img_avatar.png">
+            <% if (user.avatarPath) { %>
+                <img id="Avatar" src="<%= user.avatarPath %>">
+            <% } else { %>
+                <img id="Avatar" src="/img/default-avatar.png">
+                <% } %>
+
             <p id="Description"><%= user.description %></p>
         </div>
 

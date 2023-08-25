@@ -1,0 +1,12 @@
+#ArticleNameInput {
+    max-width: 100%;
+    width: 400px;
+    font-size: 20px;
+}
+#ArticleNameErrorBox {
+    color: red;
+    font-weight: bold;
+}
+.codex-editor {
+    padding: 0;
+}

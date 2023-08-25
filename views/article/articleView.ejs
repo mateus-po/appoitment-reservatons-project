@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head.ejs') %>
+    <link rel="stylesheet" href="/styles/article-layout.css">
+    <link rel="stylesheet" href="/styles/article-edit-layout.css">
+    <title><%= article.title %></title>
+    <link rel="icon" type="image/x-icon" href="/img/icon-paw.png">
+</head>
+<body>
+
+
+    <%- include('../partials/header.ejs') %>
+
+    <div id="Container">
+
+        <div id="Left">
+            <a href="/"><div class="nav-option">Main Page</div></a>
+            <a href="/"><div class="nav-option">About page author</div></a>
+            <a href="/"><div class="nav-option">Users</div></a>
+            <a href="/"><div class="nav-option">Most popular</div></a>
+            <a href="/"><div class="nav-option">Random article</div></a>
+        </div>
+        <div id="Middle">
+
+            <h2>
+                <%= article.title %>
+            </h2>
+            <hr>
+            <h6>Last edited <%= article.lastEdited %> by <a href="/users/profile/<%= article.lastAuthor %>"><%= article.lastAuthor %></a></h6>
+
+            <div id="editorjs"></div>
+            <%= article %>
+
+            
+        </div>
+        <div id="Right">
+
+        </div>
+
+    </div>
+
+<%- include('../partials/footer.ejs') %>
+
+</body>
+</html>

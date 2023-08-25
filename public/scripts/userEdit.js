@@ -8,6 +8,12 @@ const NicknameInput = NicknameField.querySelector('input')
 const NicknameErrorBox = document.getElementById('NicknameErrorBox')
 const SaveNicknameButton = document.getElementById('SaveNickname')
 
+const AvatarField = document.getElementById("Avatar")
+const AvatarInput = AvatarField.querySelector('input[type="file"]')
+const AvatarErrorBox = document.getElementById('AvatarErrorBox')
+const SaveAvatarButton = document.getElementById('SaveAvatar')
+const AvatarForm = document.getElementById('AvatarForm')
+
 const DescriptionField = document.getElementById("Description")
 const DescriptionInput = DescriptionField.querySelector("textarea")
 const DescriptionErrorBox = document.getElementById('DescriptionErrorBox')
@@ -18,19 +24,21 @@ const NewPasswordInput = document.getElementById("NewPassword")
 const NewPasswordAgainInput = document.getElementById("NewPasswordAgain")
 const SavePasswordButton = document.getElementById("SavePassword")
 
+// for displaying inputs 
 function inputOn(me) {
     clearAll()
     me.querySelector('span').style = "display: none;";
-    me.querySelector('img').style = "display: none;";
+    me.querySelector('.edit-icon').style = "display: none;";
     if (me.querySelector('input')) me.querySelector('input').style = "display: inline;";
     else me.querySelector('textarea').style = "display: block;";
     me.querySelectorAll('button')[0].style = "display: inline;";
     me.querySelectorAll('button')[1].style = "display: inline;";
 }
+// for hiding inputs
 function inputOff(me) {
     me.querySelector('div').innerHTML = "";
     me.querySelector('span').style = "display: inline;";
-    me.querySelector('img').style = "display: inline;";
+    me.querySelector('.edit-icon').style = "display: inline;";
     if (me.querySelector('input')) me.querySelector('input').style = "display: none;";
     else me.querySelector('textarea').style = "display: none;";
     me.querySelectorAll('button')[0].style = "display: none;";
@@ -53,6 +61,7 @@ function clearAll() {
     inputOff(EmailField);
     inputOff(NicknameField);
     inputOff(DescriptionField);
+    inputOff(AvatarField)
     passwordInputOff();
 }
 async function submit(type, value, error_box, validate) {
@@ -100,6 +109,7 @@ const validateNickname = (nickname) => {
         return `Given nickname consists of forbidden characters`
     }
 }
+
 const validateDescription = (description) => {
     
 }
@@ -127,7 +137,40 @@ const validatePassword = (password) => {
     }
 }
 
+async function submit_avatar() {
+
+    const formData = new FormData();
+      
+    formData.append("avatar", AvatarInput.files[0]);
+    
+    try {
+        const res = await fetch("/users/edit/avatar", {
+          method: "POST",
+          body: formData,
+        });
+        if (res.status != 201) {
+            const data = await res.json()
+            AvatarErrorBox.innerHTML = data.error
+            return
+        }
+        else {
+            alert("Account information has been updated successfully")
+            location.reload()
+        }
+
+    } catch (err) {
+        console.log(err)
+    }
+}
+
 SaveEmailButton.addEventListener('click', () => submit("email", EmailInput.value, EmailErrorBox, validateEmail))
 SaveNicknameButton.addEventListener('click', () => submit("nickname", NicknameInput.value, NicknameErrorBox, validateNickname))
 SaveDescriptionButton.addEventListener('click', () => submit("description", DescriptionInput.value, DescriptionErrorBox, validateDescription))
 SavePasswordButton.addEventListener('click', () => submit("newPassword", NewPasswordInput.value, PasswordErrorBox, validatePassword))
+
+AvatarForm.addEventListener('submit', (e) => {
+    e.preventDefault()
+    submit_avatar()
+
+      
+} )

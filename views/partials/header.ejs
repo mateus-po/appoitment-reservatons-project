@@ -14,10 +14,10 @@
     <div id="Auth">
         <% if(loggedUser) { %>
             Welcome, <a href="/users/profile/<%= loggedUser.nickname %>"><%= loggedUser.nickname %></a>!
-            <a href="/auth/logout">Log out</a>
+            <a class="auth-option" href="/auth/logout">Log out</a>
         <% } else { %>
-            <a href="/auth/login">Log in</a>
-            <a href="/auth/signup">Sign up</a>
+            <a class="auth-option" href="/auth/login">Log in</a>
+            <a class="auth-option" href="/auth/signup">Sign up</a>
         <% } %>
     </div>
 </div>

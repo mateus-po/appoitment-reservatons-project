@@ -13,7 +13,7 @@
 p {
     display: inline;
 }
-.edit-option > input, .edit-option > button, .edit-option > label, .edit-option > textarea {
+.edit-option > input, .edit-option > button, .edit-option > label, .edit-option > textarea, .edit-option > form > input, .edit-option > form > button {
     display: none;
 }
 .edit-option > input {
@@ -32,4 +32,7 @@ p {
 }
 .edit-option > span {
     white-space: pre-wrap;
+}
+#Avatar {
+    max-width: 400px;
 }

@@ -2,7 +2,8 @@ var mongoose = require('mongoose')
 var User = require('../models/User')
 var jwt = require('jsonwebtoken')
 var bcrypt = require('bcrypt')
-var { secretString, saltrounds } = require('../globalVariables')
+var fs = require('fs')
+var { secretString, saltrounds, absolutePath } = require('../globalVariables')
 var { isStrongPassword, isEmail } = require('validator')
 
 // displays a user page view with appropriate user data
@@ -136,6 +137,40 @@ module.exports.userEdit_post = async (req:any, res:any) => {
             }
 
         })
+    }
+    else {
+        // if user has no JWT token, the page redirects user to the login page
+        res.redirect('/auth/login')
+    }
+}
+
+module.exports.userEditAvatar_post = (req:any, res:any) => {
+    const token = req.cookies.jwt
+
+    // checkng if the user is logged in with a correct JWT 
+    if (token) {
+        jwt.verify(token, secretString, async (err:any, decodedToken:any): Promise<void> => {
+            if (!err) {
+                try {
+                    const user = await User.findById(decodedToken.id)
+                    if (user.avatarPath) {
+                        fs.unlinkSync(absolutePath + "/public" + user.avatarPath)
+                    }
+                    await User.findOneAndUpdate({_id: decodedToken.id,}, {avatarPath: `/img/userAvatars/${req.file.filename}`})
+                    res.status(201).send("success")
+                }
+                catch (err:any) {
+                    console.log(err)
+                    res.status(424).json({error: "there was a problem uploading the new avatar"})
+                }    
+            }
+            else {
+
+                res.redirect('/auth/login')
+            }
+
+        })
+        
     }
     else {
         // if user has no JWT token, the page redirects user to the login page

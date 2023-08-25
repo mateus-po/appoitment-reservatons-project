@@ -38,6 +38,25 @@
                 <button onclick="inputOff(this.parentElement)">Cancel</button>
             </div>
 
+            <h5>Avatar:</h5>
+            <div id="Avatar" class="edit-option">
+                <div id="AvatarErrorBox" class="error-box"></div>
+                <span></span>
+                <% if (loggedUser.avatarPath) { %>
+                    <img id="Avatar" src="<%= loggedUser.avatarPath %>" alt="users avatar">
+                <% } else { %>
+                    <img id="Avatar" src="/img/default-avatar.png" alt="users avatar">
+                    <% } %>
+                <img class="edit-icon" src="/img/icon-edit.png" alt="edit icon" onclick="inputOn(this.parentElement)">
+                <form id="AvatarForm" action="post" enctype="multipart/form-data" action="/upload">
+                    <input type="file" required>
+                    <button id="SaveAvatar">Save</button>
+                </form>
+
+                <button onclick="inputOff(this.parentElement)">Cancel</button>
+            </div>
+
+
             <h5>Description:</h5>
             <div id="Description" class="edit-option">
                 <div id="DescriptionErrorBox" class="error-box"></div>
