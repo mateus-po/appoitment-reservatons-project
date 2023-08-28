@@ -20,7 +20,16 @@ module.exports.userPage_get = (req, res) => __awaiter(void 0, void 0, void 0, fu
     const user = yield User.findOne({ 'nickname': req.params.username });
     if (user === null)
         res.status(404).redirect('/error404');
-    res.render('user/userPage', { user });
+    if (user.recentlyEditedArticles) {
+        let { article_titles, article_urls, article_time } = JSON.parse(user.recentlyEditedArticles);
+        res.render('user/userPage', { user, article_titles, article_urls, article_time });
+    }
+    else {
+        let article_titles = undefined;
+        let article_urls = undefined;
+        let article_time = undefined;
+        res.render('user/userPage', { user, article_titles, article_urls, article_time });
+    }
 });
 // displays an user edit page
 module.exports.userEdit_get = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -157,7 +166,10 @@ module.exports.userEditAvatar_post = (req, res) => {
                 try {
                     const user = yield User.findById(decodedToken.id);
                     if (user.avatarPath) {
-                        fs.unlinkSync(absolutePath + "/public" + user.avatarPath);
+                        // deletes only if the file exists
+                        if (fs.existsSync(absolutePath + "/public" + user.avatarPath)) {
+                            fs.unlinkSync(absolutePath + "/public" + user.avatarPath);
+                        }
                     }
                     yield User.findOneAndUpdate({ _id: decodedToken.id, }, { avatarPath: `/img/userAvatars/${req.file.filename}` });
                     res.status(201).send("success");
@@ -177,3 +189,7 @@ module.exports.userEditAvatar_post = (req, res) => {
         res.redirect('/auth/login');
     }
 };
+module.exports.displayUsers_get = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const users = yield User.find({}, 'nickname description avatarPath');
+    res.render('user/users', { users });
+});

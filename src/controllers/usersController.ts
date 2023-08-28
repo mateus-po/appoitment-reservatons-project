@@ -11,7 +11,18 @@ module.exports.userPage_get = async (req:any, res:any) => {
     const user = await User.findOne({'nickname': req.params.username})
 
     if (user === null) res.status(404).redirect('/error404')
-    res.render('user/userPage', {user})
+
+    if (user.recentlyEditedArticles) {
+    let {article_titles, article_urls, article_time} = JSON.parse(user.recentlyEditedArticles)
+
+    res.render('user/userPage', {user, article_titles, article_urls, article_time})
+    }
+    else {
+        let article_titles = undefined
+        let article_urls = undefined
+        let article_time = undefined
+    res.render('user/userPage', {user, article_titles, article_urls, article_time})
+    }
 }
 // displays an user edit page
 module.exports.userEdit_get = async (req:any, res:any) => {
@@ -154,7 +165,10 @@ module.exports.userEditAvatar_post = (req:any, res:any) => {
                 try {
                     const user = await User.findById(decodedToken.id)
                     if (user.avatarPath) {
-                        fs.unlinkSync(absolutePath + "/public" + user.avatarPath)
+                        // deletes only if the file exists
+                        if (fs.existsSync( absolutePath + "/public" + user.avatarPath )) {
+                            fs.unlinkSync(absolutePath + "/public" + user.avatarPath)
+                        }
                     }
                     await User.findOneAndUpdate({_id: decodedToken.id,}, {avatarPath: `/img/userAvatars/${req.file.filename}`})
                     res.status(201).send("success")
@@ -178,4 +192,7 @@ module.exports.userEditAvatar_post = (req:any, res:any) => {
     }
 }
 
-
+module.exports.displayUsers_get = async (req:any, res:any) => {
+    const users = await User.find({}, 'nickname description avatarPath')
+    res.render('user/users', {users})
+}

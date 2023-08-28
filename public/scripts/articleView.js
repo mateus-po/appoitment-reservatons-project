@@ -3,38 +3,38 @@ const Header = window.Header
 const Table = window.Table
 const List = window.List
 
-let mainReady = () => {}
-let sideReady = () => {}
-
-class Image extends ImageTool {
-  // image destructor
-  // if an image is deleted during editing an article, this function fires
-  async destroy() {
-    if (!this._data.file.url) return
-    // sending a requiest to a server and awaiting a response
+sideReady = async () => {
     try {
-        const res = await fetch('/deleteFile', {
-            method: 'DELETE',
-            body: JSON.stringify({path: this._data.file.url}),
+        const res = await fetch(decodeURI(location.href), {
+            method: 'POST',
+            body: JSON.stringify({type: 'body'}),
             headers: {'Content-type': 'application/json'}
         })
-        if (res.status != 201) 
-        {
-          console.log(await res.text())
+        if (res.status != 201) {
+            const data = await res.json()
+            error_box.innerHTML = data.error;
         }
+        else {
+            data = await res.json()
+            console.log(data)
+            await main_editor.render(JSON.parse(data.body))
+            await side_editor.render(JSON.parse(data.sideBody))
+            main_editor.readOnly.toggle()
+            side_editor.readOnly.toggle()
+        }
+
     } catch (err) {
         console.log(err)
     }
-  }
+
 }
 
 const main_editor = new EditorJS({
   autofocus: true,
   inlineToolbar: true,
-  onReady: mainReady,
   tools: {
       image: {
-          class: Image,
+          class: ImageTool,
           inlineToolbar: true,
           config: {
             endpoints: {
@@ -63,7 +63,7 @@ const side_editor = new EditorJS({
   onReady: sideReady,
   tools: {
     image: {
-        class: Image,
+        class: ImageTool,
         inlineToolbar: true,
         config: {
           endpoints: {

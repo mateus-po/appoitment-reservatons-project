@@ -30,6 +30,10 @@ const UserModel = new mongoose.Schema({
     avatarPath: {
         type: String,
         required: false
+    },
+    recentlyEditedArticles: {
+        type: String,
+        required: false
     }
 })
 

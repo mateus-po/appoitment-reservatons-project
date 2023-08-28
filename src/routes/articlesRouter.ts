@@ -28,7 +28,15 @@ router.post('/article/new/check-title', requireAuth, articlesController.checkTit
 // adding a new article
 router.post('/article/new', requireAuth, articlesController.newArticle_post)
 // viewing a article
-router.get('/article/:articleUrl', articlesController.viewArticle_get)
+router.get('/article/url/:articleUrl', articlesController.viewArticle_get)
+// sending additional data
+router.post('/article/url/:articleUrl', articlesController.viewArticle_post)
+// editing an article - it uses the same functions as viewing articles
+router.get('/article/url/:articleUrl/edit', requireAuth,  articlesController.editArticle_get)
+// saving changes made to the post
+router.post('/article/url/:articleUrl/edit', requireAuth, articlesController.editArticle_post)
+
+
 
 
 module.exports = router

@@ -45,21 +45,5 @@ mongoose.connect(dbURI, {useNewUrlParser: true, useUnifiedTopology: true})
 })
 .catch((err:any) => console.log(err));
 
-// garbage collector of sorts
-// deletes all photos in tmp folder that are older than tmpFilesMaxAge specifies
-const deleteOldTmpPhotos = ():void => {
-    const now = new Date()
-    fs.readdir(tpmFolder, (err:any, files:any) => {
-      if (err) console.log(err)
-      files.forEach((file:any) => {
-        let { birthtimeMs } = fs.statSync(tpmFolder + "/" + file)
-  
-        if (birthtimeMs + tmpFilesMaxAge < now.getTime()) {
-          fs.unlink(tpmFolder + "/" + file, (err:any) => {if (err) console.log(err)})
-        }
-      });
-    })
-  }
-setInterval(deleteOldTmpPhotos, 60*60*1000)
 
 module.exports = app;

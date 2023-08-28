@@ -14,25 +14,20 @@
 
     <div id="Container">
 
-        <div id="Left">
-            <a href="/"><div class="nav-option">Main Page</div></a>
-            <a href="/"><div class="nav-option">About page author</div></a>
-            <a href="/"><div class="nav-option">Users</div></a>
-            <a href="/"><div class="nav-option">Most popular</div></a>
-            <a href="/"><div class="nav-option">Random article</div></a>
-        </div>
+        <%- include('../partials/side-menu.ejs') %>
         <div id="Middle">
 
             <h2>
                 <%= article.title %>
             </h2>
             <hr>
+            <% if(loggedUser) { %>
+                <h4><a href="/article/url/<%= article.url %>/edit">Edit <img class="edit-icon" src="/img/icon-edit.png" alt="edit icon"></a></h4>
+            <% } %>
             <h6>Last edited <%= article.lastEdited %> by <a href="/users/profile/<%= article.lastAuthor %>"><%= article.lastAuthor %></a></h6>
 
             <div id="editorjs"></div>
-            <%= article %>
 
-            
         </div>
         <div id="Right">
 
@@ -41,6 +36,14 @@
     </div>
 
 <%- include('../partials/footer.ejs') %>
+    <!-- Those script tags load necessary Editor.js modules -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/image@2.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/table@2.2.2/dist/table.min.js" ></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@2.7.0/dist/bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script>
+
+    <script src="/scripts/articleView.js" defer></script>
 
 </body>
 </html>

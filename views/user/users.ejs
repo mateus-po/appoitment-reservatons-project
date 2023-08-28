@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head.ejs') %>
+    <link rel="stylesheet" href="/styles/article-layout.css">
+    <link rel="stylesheet" href="/styles/users.css">
+    <title>Users</title>
+    <link rel="icon" type="image/x-icon" href="/img/icon-paw.png">
+</head>
+<body>
+
+
+    <%- include('../partials/header.ejs') %>
+
+    <div id="Container">
+
+        <%- include('../partials/side-menu.ejs') %>
+
+        <div id="Middle">
+
+            <h1>Gatopedia users:</h1>
+
+                <% for (user of users) { %>
+                        <div class="user-box" onclick="location.href = '/users/profile/<%= user.nickname %>'">
+                            <h4 class="nickname"><%= user.nickname %></h4>
+                            <img class="avatar-img" src="<%= user.avatarPath %>" alt="<%= user.nickname %>'s avatar">
+    
+                                <% if (user.description) { %>
+                                    <% if (user.description.length > 300) { %> 
+                                        <p class="description"><%= user.description.slice(0,300) %> ...</p>
+                                    <% } else { %>
+                                        <p class="description"><%= user.description %></p>
+                                    <% } %>
+                                <% } %>
+                            </div>
+                <% } %>
+        </div>
+        <div id="Right">
+
+        </div>
+
+    </div>
+
+<%- include('../partials/footer.ejs') %>
+
+
+
+</body>
+</html>

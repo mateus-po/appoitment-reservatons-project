@@ -9,3 +9,6 @@ module.exports.maxTokenAge = 60 * 60 * 2;
 
 // absolute path to the project folder
 module.exports.absolutePath = __dirname.slice(0,-6)
+
+// how many recently edited articles on will be saved on the database 
+module.exports.rememberedRecentlyEditedArticles = 20

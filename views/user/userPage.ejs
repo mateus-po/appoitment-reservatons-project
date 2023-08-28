@@ -14,40 +14,26 @@
 
     <div id="Container">
 
-        <div id="Left">
-            <a href="/"><div class="nav-option">Main Page</div></a>
-            <a href="/"><div class="nav-option">About page author</div></a>
-            <a href="/"><div class="nav-option">Users</div></a>
-            <a href="/"><div class="nav-option">Most popular</div></a>
-            <a href="/"><div class="nav-option">Random article</div></a>
-        </div>
+        <%- include('../partials/side-menu.ejs') %>
+
         <div id="Middle">
-            <a href="/article/new" id="Article-Add"> + Add a new article</a>
+            <% if (loggedUser && loggedUser.id == user.id) { %>
+                <a href="/article/new" id="Article-Add"> + Add a new article</a>
+            <% } %>
+
+            <% if (article_titles && article_urls && article_time) { %>
             <h1>Recently edited articles:</h1>
-            <div class="article-snippet">
-                <h3>Some article</h3>
-                article snippet:  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec urna nec purus consectetur hendrerit. Integer rhoncus...
-            </div>
-            <div class="article-snippet">
-                <h3>Some article</h3>
-                article snippet:  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec urna nec purus consectetur hendrerit. Integer rhoncus...
-            </div>
-            <div class="article-snippet">
-                <h3>Some article</h3>
-                article snippet:  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec urna nec purus consectetur hendrerit. Integer rhoncus...
-            </div>
-            <div class="article-snippet">
-                <h3>Some article</h3>
-                article snippet:  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec urna nec purus consectetur hendrerit. Integer rhoncus...
-            </div>
-            <div class="article-snippet">
-                <h3>Some article</h3>
-                article snippet:  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec urna nec purus consectetur hendrerit. Integer rhoncus...
-            </div>
-            <div class="article-snippet">
-                <h3>Some article</h3>
-                article snippet:  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec urna nec purus consectetur hendrerit. Integer rhoncus...
-            </div>
+
+            <% for (let i = 0; i < article_titles.length; i++) { %>
+                <a class="article-link" href="/article/url/<%= article_urls[i] %>"><div class="article-snippet"> 
+                    <h3><%= article_titles[i] %></h3>
+                    <% let x = new Date(article_time[i]) %>
+                    Edited by <%= user.nickname %> at <%= x.toString() %>
+                </div></a>
+            <% } %>
+            <% } else { %>
+                <h1>There are no articles yet posted by this user :&lt;</h1>
+            <% } %>
         </div>
         <div id="Right">
             <h3><%= user.nickname %></h3>

@@ -12,15 +12,12 @@ saveButton.addEventListener('click', async () => {
   }
   // sanitizing given name
   let sanitazedArticleName = ArticleNameInput.value
-  sanitazedArticleName = sanitazedArticleName.replace('<', '&lt;')
-  sanitazedArticleName = sanitazedArticleName.replace('>', '&gt;')
+  sanitazedArticleName = sanitazedArticleName.replaceAll('<', '&lt;')
+  sanitazedArticleName = sanitazedArticleName.replaceAll('>', '&gt;')
 
  const savedMainData = await main_editor.save()
  const savedSideData = await side_editor.save()
-  console.log(savedMainData)
-
- main_editor.render('{"body":{"time":1692949946650,"blocks":[{"id":"CNDgjH4aFX","type":"paragraph","data":{"text":"1111231"}},{"id":"IHXUdd11Y5","type":"image","data":{"file":{"url":"/img/article/9f171d79e1489d0da617fccffc5df36c"},"caption":"234234234234","withBorder":false,"stretched":false,"withBackground":false}}],"version":"2.27.2"}}')
-  main_editor.readOnly.toggle()
+ 
 
  const res = await fetch( "/article/new", {
   method: 'POST',

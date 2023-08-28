@@ -34,3 +34,7 @@
 #Article-Add:hover {
     background-color: rgba(255, 236, 250,0.6);
 }
+.article-link {
+    color: black;
+    text-decoration: none;
+}

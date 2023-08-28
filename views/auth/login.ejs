@@ -16,7 +16,11 @@
         <label for="email">E-mail address:</label><br>
         <input type="email" name="email" required><br>
         <label for="passwd">Password:</label><br>
-        <input type="password" name="password" required><br>
+        <div id="PasswordWrapper">
+            <input type="password" name="password" onfocus="passwordOnFocus(this.parentNode)" required>
+            <img id="PasswordVisible" src="/img/icon-eye-closed.svg" alt="" onclick="togglePasswordVisibility(this.parentNode)">
+        </div>
+        <br>
         <div id="Errors"></div>
         <button>Log in</button>
     </form>
@@ -26,6 +30,7 @@
 </div>
 
 <script src="/scripts/login.js"></script>
+<script src="/scripts/passwordVisibility.js"></script>
 
 <div id="Back">
     <a href="/">

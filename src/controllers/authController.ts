@@ -31,7 +31,7 @@ module.exports.signup_post = async (req:any, res:any) => {
     if (email === undefined 
         || password === undefined 
         || nickname === undefined) {
-        res.status(422).send({error: "Invalid POST request"})
+        res.status(422).json({error: "Invalid POST request"})
         return
     }
     // checking if the given password meets safe password requirements
@@ -41,18 +41,18 @@ module.exports.signup_post = async (req:any, res:any) => {
         minUppercase: 1,
         minNumbers: 1,
         minSymbols: 1,})) {
-            res.status(422).send({error: "Given password is not strong"})
+            res.status(422).json({error: "Given password is not strong"})
             return
         }
     // chcecking if the given email is valid
     if (! isEmail(email)) {
-        res.status(422).send({error:"Given e-mail is not valid"})
+        res.status(422).json({error:"Given e-mail is not valid"})
         return
     }
     // checking if the given nickname consists only of letters, digits and 
     // "-" and "_" symbols
     if (! /^[0-9a-zA-Z_-]*$/.test(nickname)) {
-        res.status(422).send({error:"Given nickname contains forbidden characters"})
+        res.status(422).json({error:"Given nickname contains forbidden characters"})
         return
     }
     // hashing the password
@@ -70,13 +70,13 @@ module.exports.signup_post = async (req:any, res:any) => {
         // with that email or nickname
         if (err.code === 11000) {
             if (err.message.includes("email")) {
-                res.status(422).send({error:"There already exist an user with given e-mail"})
+                res.status(422).json({error:"There already exist an user with given e-mail"})
             }
             else if (err.message.includes("nickname")) {
-                res.status(422).send({error:"There already exist an user with given nickname"})
+                res.status(422).json({error:"There already exist an user with given nickname"})
             }
             else {
-                res.status(422).send({error: "Unknown duplicate error"})
+                res.status(422).json({error: "Unknown duplicate error"})
             }
             return
         }

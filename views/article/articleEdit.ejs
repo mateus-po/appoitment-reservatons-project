@@ -4,7 +4,7 @@
     <%- include('../partials/head.ejs') %>
     <link rel="stylesheet" href="/styles/article-layout.css">
     <link rel="stylesheet" href="/styles/article-edit-layout.css">
-    <title>Gatopedia</title>
+    <title><%= article.title %></title>
     <link rel="icon" type="image/x-icon" href="/img/icon-paw.png">
 </head>
 <body>
@@ -18,17 +18,18 @@
 
         <div id="Middle">
 
-
-            <h4>Article name:</h4>
-            <div id="ArticleNameErrorBox"></div>
-            <input type="text" name="article-name" id="ArticleNameInput">
-            <h4>Article Body:</h4>
-            <div id="editorjs"></div>
-
-            <button id="save-button">Save</button>
-            <pre id="output"></pre>
+            <h2>
+                <%= article.title %>
+            </h2>
+            <hr>
 
             
+            <h6>Last edited <%= article.lastEdited %> by <a href="/users/profile/<%= article.lastAuthor %>"><%= article.lastAuthor %></a></h6>
+
+            <div id="editorjs"></div>
+            <button id="Save">Save</button>
+            
+
         </div>
         <div id="Right">
 
@@ -37,7 +38,6 @@
     </div>
 
 <%- include('../partials/footer.ejs') %>
-
     <!-- Those script tags load necessary Editor.js modules -->
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/image@2.6.0"></script>
@@ -45,10 +45,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@2.7.0/dist/bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script>
 
-    <script src="/scripts/articleEditors.js" defer></script>
-    <script src="/scripts/articleSave.js" defer></script>
-
-
+    <script src="/scripts/articleEdit.js" defer></script>
 
 </body>
 </html>
