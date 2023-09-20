@@ -1,0 +1,2 @@
+here in this folder are saved images in articles
+(this txt exist only to ensure that this folder is saved properly on github)
