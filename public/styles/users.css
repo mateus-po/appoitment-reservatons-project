@@ -32,3 +32,6 @@ width: 100%;
 .nickname {
     text-align: center;
 }
+#Right > img {
+    max-width: 100%;
+}

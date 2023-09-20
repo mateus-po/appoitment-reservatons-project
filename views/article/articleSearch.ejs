@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head.ejs') %>
+    <link rel="stylesheet" href="/styles/article-layout.css">
+    <link rel="stylesheet" href="/styles/article-snippets.css">
+    <link rel="stylesheet" href="/styles/article-search.css">
+    <title>Search for: <%= searchPhrase %></title>
+    <link rel="icon" type="image/x-icon" href="/img/icon-paw.png">
+</head>
+<body>
+
+
+    <%- include('../partials/header.ejs') %>
+
+    <div id="Container">
+
+        <%- include('../partials/side-menu.ejs') %>
+        <div id="Middle">
+            <h1>Search results for "<%= searchPhrase %>":</h1>
+            <hr>
+
+            <% if (matchingArticles.length == 0) { %>
+                <img src="/img/sad-cat.jpg" alt="sad cat">
+                <h2>Unfortunately, here are no mathing articles :< </h2>
+            <% } else { %>
+
+                <% for (let article of matchingArticles) { %>
+                    <a href="/article/url/<%= article.url %>" class="article-link">
+                        <div class="article-box">
+                            <h3><%= article.title %></h3>
+                            Last edited by <%= article.lastAuthor %> at <%= article.lastEdited %> <br>
+                            Edits: <%= article.edits %>
+                        </div>
+                    </a>
+                <% } %>
+
+            <% } %>
+
+        </div>
+
+        <div id="Right">
+            <h2>Can't find what you are looking for?...</h2>
+            <img src="/img/detective-cat.webp" alt="detective cat">
+            <h2>Maybe try different search phrase!</h2>
+            I'm sure you will find it in no time:))
+        </div>
+
+    </div>
+
+<%- include('../partials/footer.ejs') %>
+
+
+</body>
+</html>

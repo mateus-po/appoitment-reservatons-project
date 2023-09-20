@@ -13,15 +13,28 @@ var bcrypt = require('bcrypt');
 var User = require('../models/User');
 var jwt = require('jsonwebtoken');
 var cookieParser = require('cookie-parser');
-var { secretString, maxTokenAge, saltrounds } = require("../globalVariables");
+var nodemailer = require('nodemailer');
+var { secretString, maxTokenAge, saltrounds, hostEmailAddress, hostEmailPassword } = require("../globalVariables");
 // function that creates a token for newly singned up or logged in users
 function createToken(id) {
     return jwt.sign({ id }, secretString, {
         expiresIn: maxTokenAge
     });
 }
+// logs in into the email service
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: hostEmailAddress,
+        pass: hostEmailPassword
+    }
+});
 // signup_get just renders the signup page
 module.exports.signup_get = (req, res) => {
+    // if there is a logged user, they shouldn't be able to see this site
+    if (res.locals.loggedUser) {
+        res.redirect('/');
+    }
     res.render('auth/signup');
 };
 // signup_post manages data that are send by POST method
@@ -62,36 +75,45 @@ module.exports.signup_post = (req, res) => __awaiter(void 0, void 0, void 0, fun
         res.status(422).json({ error: "Given nickname contains forbidden characters" });
         return;
     }
-    // hashing the password
-    let hashed_password = yield bcrypt.hash(password, saltrounds);
+    // checking it there already is an user with given email or nickname
+    const user_same_email = yield User.findOne({ email });
+    const user_same_nickname = yield User.findOne({ nickname });
+    if (user_same_email) {
+        res.status(422).json({ error: "There already exist an user with given e-mail" });
+        return;
+    }
+    if (user_same_nickname) {
+        res.status(422).json({ error: "There already exist an user with given nickname" });
+        return;
+    }
     // trying to create user in the database - if any error occurres, it 
     // means that the passed data is invalid
-    try {
-        const user = yield User.create({ email, nickname, password: hashed_password });
-        const token = createToken(user._id);
-        res.cookie('jwt', token, { httponly: true, maxAge: maxTokenAge * 1000, overwrite: true, secure: false });
-        res.status(201).json({ user: user.nickname });
-    }
-    catch (err) {
-        // that code means that the given email or username is not unique - there already exist an user 
-        // with that email or nickname
-        if (err.code === 11000) {
-            if (err.message.includes("email")) {
-                res.status(422).json({ error: "There already exist an user with given e-mail" });
-            }
-            else if (err.message.includes("nickname")) {
-                res.status(422).json({ error: "There already exist an user with given nickname" });
-            }
-            else {
-                res.status(422).json({ error: "Unknown duplicate error" });
-            }
-            return;
+    // creating a token, that encodes all the user data
+    const token = jwt.sign({ email, nickname, password }, secretString, { expiresIn: '10m' });
+    // sending and email with given token, so that user can validate email account
+    const mailConfigurations = {
+        from: hostEmailAddress,
+        to: email,
+        subject: 'Validate your email address',
+        // This would be the text of email body
+        text: `Hello ${nickname}!\nThere is only one step left to complete your Gatopedia registration. You only need to veryfy your email address. You can do it by simply clicking this link: http://localhost:3000/auth/verify/${token}`
+    };
+    transporter.sendMail(mailConfigurations, function (error, info) {
+        if (error) {
+            console.log(error.message);
+            res.status(500).json({ error: "Internal server error" });
         }
-        res.status(400).send({ error: "User not created, try sending the form again" });
-    }
+        else {
+            res.status(201).send('success?');
+        }
+    });
 });
 // login_get just renders the login page
 module.exports.login_get = (req, res) => {
+    // if there is a logged user, they shouldn't be able to see this site
+    if (res.locals.loggedUser) {
+        res.redirect('/');
+    }
     res.render('auth/login');
 };
 // manages login attempts
@@ -114,3 +136,146 @@ module.exports.logout_get = (req, res) => {
     res.cookie('jwt', '', { maxAge: 1 });
     res.redirect('/');
 };
+// renders page that says that email must be verified
+module.exports.verify_get = (req, res) => {
+    res.render('auth/verify');
+};
+// verifies given token and creates account if everything is valid
+module.exports.verifyToken_get = (req, res) => {
+    const verifyToken = req.params.verifyToken;
+    if (verifyToken) {
+        jwt.verify(verifyToken, secretString, (err, decodedToken) => __awaiter(void 0, void 0, void 0, function* () {
+            if (err) {
+                console.log(err.message);
+                res.status(500).redirect('/error500');
+                return;
+            }
+            try {
+                // hashing the password
+                decodedToken.password = yield bcrypt.hash(decodedToken.password, saltrounds);
+                const user = yield User.create(decodedToken);
+                res.status(201).redirect(`/auth/successful-verification`);
+            }
+            catch (err) {
+                console.log(err.message);
+                res.status(500).redirect('/error500');
+                return;
+            }
+        }));
+    }
+};
+module.exports.successfulVerification_get = (req, res) => {
+    res.render('auth/successfulEmailVerification');
+};
+module.exports.forgotPassword_get = (req, res) => {
+    // if there is a logged user, they shouldn't be able to see this site
+    if (res.locals.loggedUser) {
+        res.redirect('/');
+    }
+    res.render('auth/forgotPassword');
+};
+module.exports.forgotPassword_post = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // if there is a logged user, they shouldn't be able to see this site
+    if (res.locals.loggedUser) {
+        return;
+    }
+    try {
+        const email = req.body.email;
+        if (!email || !isEmail(email)) {
+            res.status(400).json({ error: 'Given email is invalid' });
+            return;
+        }
+        const user = yield User.findOne({ email });
+        if (!user) {
+            res.status(400).json({ error: 'There is no user with given email' });
+            return;
+        }
+        const token = jwt.sign({ id: user._id }, secretString, { expiresIn: '10m' });
+        // sending and email with given token, so that user can validate email account
+        const mailConfigurations = {
+            from: hostEmailAddress,
+            to: email,
+            subject: 'Reset your password',
+            // This would be the text of email body
+            text: `Hello ${user.nickname}!\n There has been a request to change a password tied to your Gatopedia account.\nYou can change your password by following this link: http://localhost:3000/auth/forgot-password/${token}\nIf it wasn't you who made this request, just ignore this message\nHave a great day!\nGatopedia`
+        };
+        transporter.sendMail(mailConfigurations, function (error, info) {
+            if (error) {
+                console.log(error.message);
+                res.status(500).json({ error: "Internal server error" });
+            }
+            else {
+                res.status(201).send('success?');
+            }
+        });
+    }
+    catch (err) {
+        console.log(err.message);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+module.exports.forgotPasswordWithToken_get = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const verifyToken = req.params.verifyToken;
+    if (verifyToken) {
+        jwt.verify(verifyToken, secretString, (err, decodedToken) => __awaiter(void 0, void 0, void 0, function* () {
+            if (err) {
+                console.log(err.message);
+                res.status(500).redirect('/error500');
+                return;
+            }
+            try {
+                const user = yield User.findById(decodedToken.id);
+                if (!user) {
+                    res.status(500).redirect('/error500');
+                    return;
+                }
+                res.status(200).render('auth/forgotPasswordWithToken', { user });
+            }
+            catch (err) {
+                console.log(err.message);
+                res.status(500).redirect('/error500');
+                return;
+            }
+        }));
+    }
+});
+module.exports.forgotPasswordWithToken_post = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const verifyToken = req.params.verifyToken;
+    if (verifyToken) {
+        jwt.verify(verifyToken, secretString, (err, decodedToken) => __awaiter(void 0, void 0, void 0, function* () {
+            if (err) {
+                console.log(err.message);
+                res.status(500).redirect('/error500');
+                return;
+            }
+            try {
+                const user = yield User.findById(decodedToken.id);
+                if (!user) {
+                    res.status(500).redirect('/error500');
+                    return;
+                }
+                const new_password = req.body.password;
+                // if password doens't meet safe password requirements
+                if (!isStrongPassword(new_password, {
+                    minLength: 8,
+                    minLowercase: 1,
+                    minUppercase: 1,
+                    minNumbers: 1,
+                    minSymbols: 1,
+                })
+                    || new_password.length > 50) {
+                    res.status(422).json({ error: "Given password is not strong" });
+                    return;
+                }
+                user.password = yield bcrypt.hash(new_password, saltrounds);
+                user.save();
+                res.status(201).send('success');
+            }
+            catch (err) {
+                console.log(err.message);
+                res.status(500).redirect('/error500');
+                return;
+            }
+        }));
+    }
+});

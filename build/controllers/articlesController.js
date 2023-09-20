@@ -8,7 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 var Img = require('../models/Image');
 var Article = require('../models/Article');
 var User = require('../models/User');
@@ -46,15 +45,28 @@ module.exports.deleteFile_delete = (req, res) => __awaiter(void 0, void 0, void 
     try {
         let path = req.body.path;
         fs.unlinkSync(absolutePath + "/public" + path);
+        yield Img.findOneAndDelete({ path });
         res.status(201).send("success");
     }
     catch (err) {
         res.status(424).send(err.message);
     }
 });
+//renders index page with data about ten newest created articles
+module.exports.viewIndex_get = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // getting ten newest articles
+    const newest_articles = yield Article.find({}, 'title url lastAuthor lastEdited').sort({ lastEdited: -1 }).limit(10);
+    res.render('index', { newest_articles });
+});
 // allows checking if there is already an article with given title
-module.exports.checkTitle_post = (req, res) => {
-};
+module.exports.checkTitle_post = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const article = yield Article.findOne({ title: req.body.title });
+    if (!article) {
+        res.status(201).send('success');
+        return;
+    }
+    res.status(400).send('There already exists an article with given name');
+});
 // creates a new article and saves it on the database
 module.exports.newArticle_post = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // to delete all articles before saving any data
@@ -80,15 +92,33 @@ module.exports.newArticle_post = (req, res) => __awaiter(void 0, void 0, void 0,
     if (sideBody.blocks.length == 0) {
         sideBody.blocks = [{ id: "dvSFGiwGIy", type: "paragraph", data: { text: "" } }];
     }
+    // assigning true to the all images hasArticle property
+    // used for avoiding deletion of images that are assigned to some articles
+    // images having hasArticle === false will be periodically deleted as a means of garbage collecting
+    try {
+        for (let block of body.blocks) {
+            if (block.type == 'image') {
+                let path = block.data.file.url;
+                yield Img.findOneAndUpdate({ path }, { hasArticle: true });
+            }
+        }
+    }
+    catch (err) {
+        console.log(err.message);
+        res.redirect('/error500');
+        return;
+    }
     body = JSON.stringify(body);
     sideBody = JSON.stringify(sideBody);
     const token = req.cookies.jwt;
     if (!token) {
         res.redirect('/auth/login');
+        return;
     }
     jwt.verify(token, secretString, (err, decodedToken) => __awaiter(void 0, void 0, void 0, function* () {
         if (err) {
             res.redirect('/auth/login');
+            return;
         }
         try {
             const user = yield User.findById(decodedToken.id);
@@ -100,6 +130,8 @@ module.exports.newArticle_post = (req, res) => __awaiter(void 0, void 0, void 0,
                 lastEdited,
                 body,
                 sideBody,
+                views: 0,
+                edits: 1,
             });
             user.recentlyEditedArticles = updateRecentlyEdited(user.recentlyEditedArticles, article.title, article.url, article.lastEdited);
             user.save();
@@ -108,6 +140,7 @@ module.exports.newArticle_post = (req, res) => __awaiter(void 0, void 0, void 0,
         catch (err) {
             if (err.code == 11000) {
                 res.status(424).send("Given article title was not unique");
+                return;
             }
             console.log(err);
             res.status(424).send("Unknown error");
@@ -120,30 +153,47 @@ module.exports.newArticle_post = (req, res) => __awaiter(void 0, void 0, void 0,
 // rest of the data via POST request
 module.exports.viewArticle_get = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const url = decodeURI(req.params.articleUrl);
-    if (!url)
+    if (!url) {
         res.status(404).redirect('/error404');
-    const article = yield Article.findOne({ url }, 'title lastEdited lastAuthor url');
-    if (!article)
+        return;
+    }
+    const article = yield Article.findOne({ url }, 'title lastEdited lastAuthor url views edits');
+    if (!article) {
         res.status(404).redirect('/error404');
+        return;
+    }
+    // incrementing article views parameter
+    if (!article.views)
+        article.views = 0;
+    article.views = article.views + 1;
+    yield article.save();
     res.render('article/articleView', { article });
 });
 module.exports.viewArticle_post = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const url = decodeURI(req.params.articleUrl);
-    if (!url)
+    if (!url) {
         res.status(404).json({ error: 'there was a problem' });
+        return;
+    }
     const article = yield Article.findOne({ url }, 'body sideBody');
-    if (!article)
+    if (!article) {
         res.status(404).json({ error: 'there was a problem' });
+        return;
+    }
     res.status(201).json(article);
 });
 // does virtually the same as viewArticle_get, but renders different page
 module.exports.editArticle_get = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const url = decodeURI(req.params.articleUrl);
-    if (!url)
+    if (!url) {
         res.status(404).redirect('/error404');
+        return;
+    }
     const article = yield Article.findOne({ url }, 'title lastEdited lastAuthor url');
-    if (!article)
+    if (!article) {
         res.status(404).redirect('/error404');
+        return;
+    }
     res.render('article/articleEdit', { article });
 });
 module.exports.editArticle_post = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -162,11 +212,14 @@ module.exports.editArticle_post = (req, res) => __awaiter(void 0, void 0, void 0
     }
     body = JSON.stringify(body);
     sideBody = JSON.stringify(sideBody);
-    if (!url || !token)
+    if (!url || !token) {
         res.status(404).json({ error: 'There has been an error' });
+        return;
+    }
     jwt.verify(token, secretString, (err, decodedToken) => __awaiter(void 0, void 0, void 0, function* () {
         if (err) {
             res.status(404).json({ error: 'There has been an error' });
+            return;
         }
         try {
             const user = yield User.findById(decodedToken.id);
@@ -179,6 +232,9 @@ module.exports.editArticle_post = (req, res) => __awaiter(void 0, void 0, void 0
             article.sideBody = sideBody;
             article.lastEdited = lastEdited;
             article.lastAuthor = lastAuthor;
+            if (!article.edits)
+                article.edits = 0;
+            article.edits++;
             user.recentlyEditedArticles = updateRecentlyEdited(user.recentlyEditedArticles, article.title, article.url, article.lastEdited);
             article.save();
             user.save();
@@ -189,6 +245,37 @@ module.exports.editArticle_post = (req, res) => __awaiter(void 0, void 0, void 0
             res.status(424).json({ error: 'There has been an error' });
         }
     }));
+});
+module.exports.randomArticle_get = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const articles_count = yield Article.countDocuments({});
+    if (articles_count == 0) {
+        res.status(404).render('404');
+        return;
+    }
+    const articles_to_skip = Math.floor(Math.random() * articles_count);
+    const random_article = yield Article.findOne({}).skip(articles_to_skip);
+    res.redirect('/article/url/' + random_article.url);
+});
+module.exports.searchArticle_get = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const searchPhrase = req.params.searchPhrase;
+    try {
+        const matchingArticles = yield Article.find({ $text: { $search: searchPhrase } }, 'title url lastAuthor lastEdited edits').limit(20);
+        res.status(200).render('article/articleSearch', { searchPhrase, matchingArticles });
+    }
+    catch (err) {
+        console.log(err.message);
+        res.status(500).render('500');
+    }
+});
+module.exports.mostPopularArticles_get = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const most_viewed_articles = yield Article.find({}, 'title url lastAuthor lastEdited views edits').sort({ views: -1 }).limit(10);
+        const most_edited_articles = yield Article.find({}, 'title url lastAuthor lastEdited views edits').sort({ edits: -1 }).limit(10);
+        res.status(201).render('article/articleMostPopular', { most_viewed_articles, most_edited_articles });
+    }
+    catch (err) {
+        res.status(500).redirect('/error500');
+    }
 });
 // this function takes care of adding articles to the recently edited array
 // recentlyEdited is a JSON object which follows the structure:

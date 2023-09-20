@@ -13,7 +13,7 @@ form.addEventListener("submit", async (e) => {
 
     // sending a requiest to a server and awaiting a response
     try {
-        error_box.innerHTML = ""
+        error_box.innerHTML = '<img src="/img/loading.gif">'
         const res = await fetch('/auth/login', {
             method: 'POST',
             body: JSON.stringify({email, password}),

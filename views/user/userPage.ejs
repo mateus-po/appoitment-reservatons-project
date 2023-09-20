@@ -4,6 +4,8 @@
     <%- include('../partials/head.ejs') %>
     <link rel="stylesheet" href="/styles/article-layout.css">
     <link rel="stylesheet" href="/styles/userPage-layout.css">
+    <link rel="stylesheet" href="/styles/article-snippets.css">
+
     <title><%= user.nickname %></title>
     <link rel="icon" type="image/x-icon" href="/img/icon-paw.png">
 </head>
@@ -25,14 +27,14 @@
             <h1>Recently edited articles:</h1>
 
             <% for (let i = 0; i < article_titles.length; i++) { %>
-                <a class="article-link" href="/article/url/<%= article_urls[i] %>"><div class="article-snippet"> 
+                <a class="article-link" href="/article/url/<%= article_urls[i] %>"><div class="article-box"> 
                     <h3><%= article_titles[i] %></h3>
                     <% let x = new Date(article_time[i]) %>
                     Edited by <%= user.nickname %> at <%= x.toString() %>
                 </div></a>
             <% } %>
             <% } else { %>
-                <h1>There are no articles yet posted by this user :&lt;</h1>
+                <h1>There are no articles yet posted by this user <span style="white-space: nowrap;">:&lt;</span></h1>
             <% } %>
         </div>
         <div id="Right">

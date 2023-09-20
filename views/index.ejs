@@ -3,6 +3,8 @@
 <head>
     <%- include('partials/head.ejs') %>
     <link rel="stylesheet" href="/styles/article-layout.css">
+    <link rel="stylesheet" href="/styles/index.css">
+    <link rel="stylesheet" href="/styles/article-snippets.css">
     <title>Gatopedia</title>
     <link rel="icon" type="image/x-icon" href="/img/icon-paw.png">
 </head>
@@ -16,28 +18,42 @@
         <%- include('partials/side-menu.ejs') %>
 
         <div id="Middle">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec urna nec purus consectetur hendrerit. Integer rhoncus, lorem id cursus efficitur, eros sem ullamcorper mauris, sed dapibus sapien quam in diam. Maecenas posuere lectus non risus dictum congue. Phasellus ligula purus, eleifend id sollicitudin et, pretium vel metus. Suspendisse in lectus nibh. Fusce faucibus, elit in posuere maximus, sem ex tincidunt dui, non egestas dolor urna eget sem. Nulla facilisi. Fusce scelerisque fringilla velit, ut rhoncus metus interdum ac. Suspendisse quis posuere purus, eget posuere lacus. Etiam consectetur sem vel dignissim pharetra. Etiam suscipit ipsum turpis, sed luctus ipsum volutpat et. Sed semper purus mollis pretium rutrum. Nam finibus nibh eget risus porta porta.
+            <div id="Welcome-Text">
+                Gatopedia is a perfect place for cat enthusiasts to share cool cat facts, cute cat pics or simply to express their love for our
+                feline companions with other users. Register (or sign in) to Gatopedia, create and edit articles and become a member of a growing
+                gato-community. Have fun!
+            </div>
+            <div id="Cats-Panel">
+                <img src="/img/cute-cat1.jpg" alt="cute cat 1">
+                <img src="/img/cute-cat2.jpg" alt="cute cat 2">
+                <img src="/img/cute-cat3.jpg" alt="cute cat 3">
+                <img src="/img/cute-cat4.jpg" alt="cute cat 4">
+            </div>
 
-Vestibulum et turpis laoreet, consectetur libero placerat, mattis odio. Praesent venenatis purus eu dapibus gravida. Vestibulum pellentesque justo ut lectus euismod facilisis. Nunc mollis dui in accumsan mollis. Quisque eget pharetra magna. Ut lacus magna, consectetur eget aliquam pretium, ultrices id dolor. Sed ac fringilla nisl.
+            <% if (newest_articles) { %>
+                <h2>Recently edited articles:</h2>
 
-Sed volutpat tortor ut venenatis consequat. Nulla in eros ut justo pulvinar fringilla. Aliquam scelerisque porta metus. Integer sed nisi neque. Phasellus tempus tempor nibh vel congue. Donec elementum tincidunt justo in tempor. Etiam vestibulum vitae nisl sed pulvinar. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae porta lacus. Duis viverra diam hendrerit lacus aliquam fringilla.
+                <% for (let article of newest_articles) { %>
 
-Duis imperdiet odio vitae augue sollicitudin commodo. Morbi congue magna lorem, nec cursus leo egestas ut. Quisque purus sem, tempus a nisl quis, ornare tempor diam. Sed ac varius erat. Vestibulum in semper augue. Mauris consequat, lectus a vestibulum vehicula, ligula magna malesuada sapien, ac placerat nisl ante tempus neque. Nunc venenatis risus quis purus efficitur, eu condimentum est malesuada. Phasellus hendrerit tortor eu laoreet placerat.
+                    <a href="/article/url/<%= article.url %>" class="article-link">
+                        <div class="article-box">
+                            <h3><%= article.title %></h3>
+                            recently edited by: <%= article.lastAuthor %> at: <%= article.lastEdited %>
+                        </div>
+                    </a>
+                <% } %>
+            <% } else { %>
+                <h2>There are no articles yet :<</h2>
+            <% } %>
+            
 
-Pellentesque tortor ante, rutrum eget ante nec, lacinia gravida massa. Duis erat sapien, elementum a libero interdum, ullamcorper dapibus odio. Sed commodo mi sit amet lorem tempor, at eleifend justo faucibus. Pellentesque ante mi, efficitur et augue id, lacinia laoreet nisl. Cras sed nunc urna. Nullam feugiat felis id ligula lobortis vehicula. Nullam congue, orci quis scelerisque scelerisque, arcu mauris sollicitudin odio, ut viverra purus sapien ac lorem. Duis convallis euismod justo ut auctor. Aliquam sit amet odio tincidunt, accumsan justo vel, tempus lorem. Ut pretium eu quam nec sodales.
 
-Curabitur vitae est venenatis, bibendum sapien et, consequat velit. Integer mi lectus, lacinia at tellus vel, mattis mollis risus. Fusce urna sapien, rhoncus et lectus ut, finibus viverra orci. Maecenas ac placerat ante. Donec ut arcu elit. Aliquam et mi molestie, sagittis elit auctor, condimentum magna. Sed mattis vel magna iaculis pretium. Morbi elementum luctus est quis sollicitudin.
-
-In nisl velit, rutrum sed interdum at, tincidunt nec enim. Praesent eu tristique mi. Aliquam id nisi vitae sapien aliquam auctor ultricies eget felis. Cras elit neque, aliquet sed commodo non, accumsan at lacus. Integer ultrices nec nisi quis sagittis. Curabitur nec vulputate tellus. Vivamus imperdiet porta leo. Curabitur condimentum ex semper arcu ultrices fringilla. Nulla libero felis, viverra et porta sed, euismod eget nulla. Phasellus elit purus, euismod in orci in, dignissim bibendum nulla. Nullam id blandit sapien, eget fermentum urna.
-
-Pellentesque molestie mi sit amet volutpat euismod. Vivamus feugiat turpis quis sapien dignissim, eu pellentesque lectus ullamcorper. Duis vel turpis molestie, porttitor nisi sed, auctor nisi. Pellentesque laoreet lectus urna, a dignissim turpis posuere at. Morbi vitae est pharetra, fringilla massa eu, tristique ligula. Suspendisse et nisl sit amet risus fermentum sodales. Ut id lacinia elit, id iaculis ipsum. Aliquam dapibus quam ac gravida ultricies. Proin laoreet auctor leo, ut malesuada nulla malesuada non. Proin sagittis mauris ipsum, quis mollis dolor malesuada in. Fusce ut mauris odio.
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus eleifend erat ac nisl consequat, a bibendum ipsum gravida. Praesent ut egestas lorem. Etiam erat elit, volutpat non iaculis vitae, convallis vitae leo. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent venenatis massa mi, nec gravida nunc hendrerit faucibus. Sed metus nisl, vulputate sed magna quis, consequat euismod arcu. Proin neque leo, vehicula quis ultrices et, condimentum nec velit. Donec egestas, libero sed sagittis scelerisque, nisl augue imperdiet nunc, et congue leo augue ac nisl. Nunc quis ex venenatis, malesuada diam nec, dapibus augue. Mauris eget tellus sit amet velit pellentesque interdum. Vestibulum cursus nisl sem, ut eleifend elit auctor sed. Duis eu accumsan felis. Sed ac lorem vel neque volutpat pulvinar. Nullam at sapien leo.
-
-Pellentesque at gravida tortor, in sagittis ligula. Donec eget turpis et nisi gravida lobortis. Suspendisse consequat ligula odio, ac sollicitudin odio placerat sed. Duis porta, arcu eget lobortis vestibulum, ipsum nisl vestibulum lorem, id faucibus urna justo id enim. Pellentesque rutrum nulla in ex maximus molestie. Mauris fringilla aliquet leo non condimentum. Cras id neque volutpat, auctor tellus ut, lobortis mi. Proin at turpis sed justo rhoncus mattis in sed magna. Curabitur nec ante lectus. Fusce erat risus, lacinia condimentum volutpat sed, ultrices eget diam. Proin vestibulum arcu a turpis placerat, id venenatis ante interdum. Cras dictum ante malesuada neque rutrum, lobortis tempus tellus dapibus.
         </div>
         <div id="Right">
-
+            <h2>Did you know...</h2>
+            <img src="/img/curious-cat.webp" alt="curious cat">
+            <h2>... that "gato" means "cat" in Spanish? </h2>
+            Therefore Gatopedia means simply "cat-pedia", which makes perfect sense I guess.
         </div>
 
     </div>

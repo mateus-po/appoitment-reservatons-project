@@ -18,8 +18,21 @@ module.exports.requireAuth = (req, res, next) => __awaiter(void 0, void 0, void 
         jwt.verify(token, secretString, (err, decodedToken) => __awaiter(void 0, void 0, void 0, function* () {
             if (err) {
                 res.redirect('/auth/login');
+                return;
             }
             else {
+                try {
+                    const user = yield User.findById({ _id: decodedToken.id });
+                    if (!user) {
+                        res.redirect('/auth/login');
+                        return;
+                    }
+                }
+                catch (err) {
+                    console.log(err);
+                    res.redirect('/auth/login');
+                    return;
+                }
                 next();
             }
         }));

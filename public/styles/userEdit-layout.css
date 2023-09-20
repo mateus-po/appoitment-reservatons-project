@@ -3,7 +3,7 @@
     justify-content: center;
 }
 #Middle {
-    min-width: 400px;
+    min-width: 300px;
 }
 .edit-icon {
     margin-left: 5px;
@@ -28,11 +28,30 @@ p {
     width: 100%;
     max-width: 700px;
     resize: none;
-    height: 70px;
+    height: 200px;
+    font-family: inherit;
+    font-size: inherit;
 }
 .edit-option > span {
     white-space: pre-wrap;
 }
 #Avatar {
-    max-width: 400px;
+    max-width: 300px;
+}
+
+#Delete-User-Button {
+    margin-top: 60px;
+    padding: 6px;
+    background-color: red;
+    color: white;
+    font-weight: bold;
+    border-radius: 3px;
+    border-color: red;
+}
+button:hover {
+    cursor: pointer;
+}
+#Delete-User-Button:hover {
+    background-color: rgb(255, 36, 36);
+    border-color: rgb(255, 36, 36);
 }

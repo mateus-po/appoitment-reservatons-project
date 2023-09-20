@@ -22,7 +22,7 @@ input {
     border-color: rgba(254,220,219,255);
 }
 button {
-    width: 100%;
+    width: 350px;
     padding: 5px;
     vertical-align:middle;
     font-size: 17px;
@@ -37,7 +37,7 @@ button:hover {
     bottom: 0;
 }
 #Container {
-    min-width: 350px;
+    width: 358px;
     background-color: rgba(255, 255, 255, 0.8);
     border-radius: 20px;
     text-align: center;
@@ -64,10 +64,16 @@ button:hover {
     text-decoration: none;
 }
 #Errors {
-    min-height: 20px;
+    min-height: 60px;
     padding-bottom: 25px;
     color: red;
     text-align: left;
+}
+#Errors > img {
+    height: 60px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
 }
 .invalid {
     border-color: red;

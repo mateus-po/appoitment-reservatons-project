@@ -19,15 +19,17 @@
         <input type="text" name="nickname" required><br>
         <label for="password">Password:</label><br>
         <div id="PasswordWrapper">
-            <input type="password" name="password" onfocus="passwordOnFocus(this.parentNode)" required>
+            <input id="Password" type="password" name="password" onfocus="passwordOnFocus(this.parentNode)" required>
             <img id="PasswordVisible" src="/img/icon-eye-closed.svg" alt="" onclick="togglePasswordVisibility(this.parentNode)">
         </div>
         <label for="passwd-again">Password again:</label><br>
         <div id="PasswordWrapper">
-            <input type="password" name="passwd-again" onfocus="passwordOnFocus(this.parentNode)" required>
+            <input id="PasswordAgain" type="password" name="passwd-again" onfocus="passwordOnFocus(this.parentNode)" required>
             <img id="PasswordVisible" src="/img/icon-eye-closed.svg" alt="" onclick="togglePasswordVisibility(this.parentNode)">
         </div>
-        <div id="Errors"></div>
+        <div id="Errors">
+
+        </div>
         <button>Sign up</button>
     </form>
 </div>

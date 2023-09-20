@@ -1,0 +1,10 @@
+
+
+#Cats-Background {
+    background-image: url(/img/cats-background.jpg);
+    height: 100px;
+    background-size: contain;
+}
+#Right > img {
+    width: 100%;
+}

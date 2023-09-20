@@ -1,0 +1,31 @@
+#Welcome-Text {
+    font-size: 22px;
+    padding: 10px;
+}
+#Right > img {
+    width: 100%;
+}
+#Cats-Panel {
+    display: flex;
+    flex-wrap: wrap;
+}
+#Cats-Panel > img {
+    width: calc(25% - 10px);
+    padding: 5px;
+}
+@media screen and (max-width: 700px) {
+    #Cats-Panel > img {
+        width: calc(50% - 10px);
+        padding: 5px;
+    }
+  }
+.article-snippet {
+    text-decoration: none;
+    color: black;
+}
+.article-snippet > div {
+    padding: 10px;
+}
+.article-snippet :hover {
+    background-color: rgba(255, 236, 250,0.6);
+}

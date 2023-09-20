@@ -1,7 +1,7 @@
 #ArticleNameInput {
     max-width: 100%;
     width: 400px;
-    font-size: 20px;
+    font-size: 15px;
 }
 #ArticleNameErrorBox {
     color: red;
@@ -9,4 +9,7 @@
 }
 .codex-editor {
     padding: 0;
+}
+button {
+    font-size: 15px;
 }

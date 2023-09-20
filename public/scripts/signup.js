@@ -1,5 +1,7 @@
 const form = document.querySelector("form");
 const error_box = document.getElementById("Errors");
+const passwordInput = document.getElementById('Password')
+const passwordAgainInput = document.getElementById('PasswordAgain')
 
 // validates given form input and sends data to the server
 form.addEventListener("submit", async (e) => {
@@ -9,8 +11,8 @@ form.addEventListener("submit", async (e) => {
     // getting the values
     const email = form.email.value
     const nickname = form.nickname.value
-    const password = form.password.value;
-    const password_again = form.passwordAgain.value;
+    const password = passwordInput.value;
+    const password_again = passwordAgainInput.value;
 
     // checking if nickname contains only allowed characters
     if (!/^[a-zA-Z0-9_-]*$/.test(nickname)) {
@@ -31,7 +33,7 @@ form.addEventListener("submit", async (e) => {
     && password.length >= 8         // at least eight characters long
     && password.length <= 50))      // maximum 50 characters
     {
-        form.password.classList.add("invalid")
+        passwordInput.classList.add("invalid")
         error_box.innerHTML = `Given password isn't strong. To meet requirements for a strong password, it has to have:
         <ul>
         <li>Length ranging from 8 through 50 characters</li>
@@ -43,25 +45,25 @@ form.addEventListener("submit", async (e) => {
         return
     }
     else {
-        form.password.classList.remove("invalid")
+        passwordInput.classList.remove("invalid")
         error_box.innerHTML = ""
     }
 
     // checking if both given passwords are the same
     if (password !== password_again) {
-        form.password.classList.add("invalid")
-        form.passwordAgain.classList.add("invalid")
+        passwordInput.classList.add("invalid")
+        passwordAgainInput.classList.add("invalid")
         error_box.innerHTML = "Given passwords aren't the same"
         return
     }
     else {
-        form.password.classList.remove("invalid")
-        form.passwordAgain.classList.remove("invalid")
+        passwordInput.classList.remove("invalid")
+        passwordAgainInput.classList.remove("invalid")
         error_box.innerHTML = ""
     }
     // sending a requiest to a server and awaiting a response
     try {
-        error_box.innerHTML = ""
+        error_box.innerHTML = '<img src="/img/loading.gif">'
         const res = await fetch('/auth/signup', {
             method: 'POST',
             body: JSON.stringify({email, nickname, password}),
@@ -72,8 +74,7 @@ form.addEventListener("submit", async (e) => {
             error_box.innerHTML = data.error;
         }
         else {
-            const data = await res.json()
-            location.assign(`/users/profile/${data.user}`)
+            location.replace("/auth/verify");
         }
 
     } catch (err) {

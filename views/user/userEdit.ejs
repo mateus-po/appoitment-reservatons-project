@@ -17,6 +17,7 @@
 
         <div id="Middle">
             <h3>Edit your accout</h3>
+            <hr>
             <h5>E-mail:</h5>
 
             <div id="Email" class="edit-option">
@@ -62,12 +63,12 @@
                 <div id="DescriptionErrorBox" class="error-box"></div>
                 <span><%= loggedUser.description %></span>
                 <img class="edit-icon" src="/img/icon-edit.png" alt="edit icon" onclick="inputOn(this.parentElement)">
-                <textarea><%= loggedUser.description %></textarea>
+                <textarea oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'><%= loggedUser.description %></textarea>
                 <button id="SaveDescription">Save</button>
                 <button onclick="inputOff(this.parentElement)">Cancel</button>
             </div>
 
-            <h5>Change password:<img class="edit-icon" src="/img/icon-edit.png" alt="edit icon" onclick="passwordInputOn()"></h5>
+            <h5>Change password:<img class="edit-icon" src="/img/icon-edit.png" alt="edit icon" onclick="passwordInputOn()" id="Edit-Icon-Password"></h5>
             <div id="Password" class="edit-option">
                 <div id="PasswordErrorBox" class="error-box"></div><br>
                 <label for="currentPassword">Current Password: </label> <br>
@@ -81,6 +82,10 @@
             </div>
 
 
+            <button id="Delete-User-Button">
+                Delete user
+            </button>
+
 
            
         </div>
@@ -91,7 +96,6 @@
     </div>
 
 <%- include('../partials/footer.ejs') %>
-<a target="_blank" href="https://icons8.com/icon/49/edit">Edit</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 
 
 </body>

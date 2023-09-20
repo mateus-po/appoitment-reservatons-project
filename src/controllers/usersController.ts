@@ -154,6 +154,48 @@ module.exports.userEdit_post = async (req:any, res:any) => {
         res.redirect('/auth/login')
     }
 }
+// deletes user from database, the article posted by user stay intact
+module.exports.userDelete = async (req:any, res:any) => {
+    const token = req.cookies.jwt
+
+    if (!token) {
+        res.redirect('/auth/login')
+        return
+    }
+
+    jwt.verify(token, secretString, async (err:any, decodedToken:any): Promise<void> => {
+        if (err) {
+            res.redirect('/auth/login')
+
+            return
+        }
+
+        try {
+            const user = await User.findById({_id: decodedToken.id})
+
+            if (user.avatarPath) {
+                // deletes only if the file exists
+                if (fs.existsSync( absolutePath + "/public" + user.avatarPath )) {
+                    fs.unlinkSync(absolutePath + "/public" + user.avatarPath)
+                }
+            }
+
+            const username = user.nickname
+
+            await user.deleteOne()
+            res.status(201).send(username)
+        }
+        catch (err:any) {
+            console.log(err.message)
+
+            res.redirect('/auth/login')
+            return
+        }
+
+
+    })
+
+}
 
 module.exports.userEditAvatar_post = (req:any, res:any) => {
     const token = req.cookies.jwt

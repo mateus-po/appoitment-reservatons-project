@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head.ejs') %>
+    <link rel="stylesheet" href="/styles/article-layout.css">
+    <link rel="stylesheet" href="/styles/article-most-popular.css">
+    <link rel="stylesheet" href="/styles/article-snippets.css">
+    <title>Most popular articles</title>
+    <link rel="icon" type="image/x-icon" href="/img/icon-paw.png">
+</head>
+<body>
+
+
+    <%- include('../partials/header.ejs') %>
+
+    <div id="Container">
+
+        <%- include('../partials/side-menu.ejs') %>
+        <div id="Middle">
+
+            <% if (most_viewed_articles && most_edited_articles) { %>
+                <div id="Most-Viewed" class="most-popular-box">
+                    <h1>Most viewed articles:</h1>
+                    <% for (article of most_viewed_articles) { %>
+                        <a href="/article/url/<%= article.url %>" class="article-link">
+                            <div class="article-box">
+                                <h3><%= article.title %></h3>
+                                Last edited by <%= article.lastAuthor %> at <%= article.lastEdited %> <br>
+                                Views: <%= article.views %>
+                            </div>
+                        </a>
+                    <% } %>
+                </div>
+                <div id="Cats-Background"></div>
+                <div id="Most-Edited" class="most-popular-box">
+                    <h1>Most edited articles:</h1>
+                    <% for (article of most_edited_articles) { %>
+                        <a href="/article/url/<%= article.url %>" class="article-link">
+                            <div class="article-box">
+                                <h3><%= article.title %></h3>
+                                Last edited by <%= article.lastAuthor %> at <%= article.lastEdited %> <br>
+                                Edits: <%= article.edits %>
+                            </div>
+                        </a>
+                    <% } %>
+                </div>
+                </div>
+
+
+            <% } else { %>
+                <h3>There are no articles posted on Gatopedia yet :<</h3>
+            <% } %>
+
+
+        <div id="Right">
+
+            Here you can see some of the most popular articles on Gatopedia divided in two categories: most viewed and most edited.
+            <img src="/img/kitten.png" alt="cute kitten">
+            Who knows, maybe your article will be on this page someday?...
+
+        </div>
+
+    </div>
+
+<%- include('../partials/footer.ejs') %>
+
+
+</body>
+</html>

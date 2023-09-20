@@ -1,0 +1,9 @@
+#Middle {
+    text-align: center;
+}
+#Middle > h1, #Middle > p {
+    text-align: left;
+}
+#Middle > img, #Right > img {
+    max-width: 100%;
+}

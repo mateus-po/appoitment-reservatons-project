@@ -24,13 +24,15 @@ const NewPasswordInput = document.getElementById("NewPassword")
 const NewPasswordAgainInput = document.getElementById("NewPasswordAgain")
 const SavePasswordButton = document.getElementById("SavePassword")
 
+const DeleteUserButton = document.getElementById("Delete-User-Button")
+
 // for displaying inputs 
 function inputOn(me) {
     clearAll()
     me.querySelector('span').style = "display: none;";
     me.querySelector('.edit-icon').style = "display: none;";
     if (me.querySelector('input')) me.querySelector('input').style = "display: inline;";
-    else me.querySelector('textarea').style = "display: block;";
+    else me.querySelector('textarea').style = "display: block;"
     me.querySelectorAll('button')[0].style = "display: inline;";
     me.querySelectorAll('button')[1].style = "display: inline;";
 }
@@ -46,6 +48,7 @@ function inputOff(me) {
 }
 function passwordInputOn() {
     clearAll()
+    document.getElementById('Edit-Icon-Password').style = 'display: none';
     const Field = document.getElementById("Password")
     for (node of Field.childNodes) {
         node.style = "display: inline;";
@@ -53,6 +56,7 @@ function passwordInputOn() {
 }
 function passwordInputOff() {
     const Field = document.getElementById("Password")
+    document.getElementById('Edit-Icon-Password').style = 'display: inline';
     for (node of Field.childNodes) {
         node.style = "display: none;";
     }
@@ -111,7 +115,10 @@ const validateNickname = (nickname) => {
 }
 
 const validateDescription = (description) => {
-    
+    let length = description.length
+    if (length > 600) {
+        return `Description can have max 600 characters! (Your description has ${length})`
+    }
 }
 const validatePassword = (password) => {
     // chcecking if the given password isn't strong
@@ -171,6 +178,18 @@ SavePasswordButton.addEventListener('click', () => submit("newPassword", NewPass
 AvatarForm.addEventListener('submit', (e) => {
     e.preventDefault()
     submit_avatar()
-
-      
 } )
+
+
+// deleting user
+DeleteUserButton.addEventListener('click', async () => {
+    if (confirm("Do you really want to delete your account?", )) {
+        const res = await fetch('/users/delete', {
+            method: 'DELETE'
+        })
+        if (res.status === 201) {
+            alert(`Goodbye ${await res.text()}!\nYour account has been deleted`)
+            location.replace("/");
+        }
+    }
+})

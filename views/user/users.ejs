@@ -23,7 +23,11 @@
                 <% for (user of users) { %>
                         <div class="user-box" onclick="location.href = '/users/profile/<%= user.nickname %>'">
                             <h4 class="nickname"><%= user.nickname %></h4>
-                            <img class="avatar-img" src="<%= user.avatarPath %>" alt="<%= user.nickname %>'s avatar">
+                            <% if (user.avatarPath) { %>
+                                <img class="avatar-img" src="<%= user.avatarPath %>" alt="<%= user.nickname %>'s avatar">
+                            <% } else { %>
+                                <img class="avatar-img" src="/img/default-avatar.png" alt="<%= user.nickname %>'s avatar">
+                                <% } %>
     
                                 <% if (user.description) { %>
                                     <% if (user.description.length > 300) { %> 
@@ -36,6 +40,10 @@
                 <% } %>
         </div>
         <div id="Right">
+            <h2>Isn't it crazy?</h2>
+            <img src="/img/crazy-cat.jpg" alt="crazy cat">
+            <h2>Gatopedia has so many users!</h2>
+            And the fact that every one of them is a cat-lover is absolutely mind-boggling
 
         </div>
 

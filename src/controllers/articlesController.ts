@@ -1,5 +1,3 @@
-import { error } from "console"
-
 var Img = require('../models/Image')
 var Article = require('../models/Article')
 var User = require('../models/User')
@@ -36,13 +34,29 @@ module.exports.deleteFile_delete = async (req:any, res:any) => {
   try {
     let path = req.body.path
     fs.unlinkSync(absolutePath + "/public" + path)
+    await Img.findOneAndDelete({path})
     res.status(201).send("success")
   } catch (err:any) {
     res.status(424).send(err.message)
   }
 }
+//renders index page with data about ten newest created articles
+module.exports.viewIndex_get = async (req:any, res:any) => {
+  // getting ten newest articles
+
+  const newest_articles = await Article.find({}, 'title url lastAuthor lastEdited').sort({ lastEdited: -1 }).limit(10)
+
+  res.render('index', {newest_articles})
+}
 // allows checking if there is already an article with given title
-module.exports.checkTitle_post = (req:any, res:any) => {
+module.exports.checkTitle_post = async (req:any, res:any) => {
+  const article = await Article.findOne({title: req.body.title})
+
+  if (!article) {
+    res.status(201).send('success')
+    return
+  }
+  res.status(400).send('There already exists an article with given name')
 }
 // creates a new article and saves it on the database
 module.exports.newArticle_post = async (req:any, res:any) => {
@@ -75,6 +89,23 @@ module.exports.newArticle_post = async (req:any, res:any) => {
     sideBody.blocks = [{id:"dvSFGiwGIy",type:"paragraph",data:{text:""}}]
   }
 
+  // assigning true to the all images hasArticle property
+  // used for avoiding deletion of images that are assigned to some articles
+  // images having hasArticle === false will be periodically deleted as a means of garbage collecting
+  try {
+    for (let block of body.blocks) {
+      if (block.type == 'image') {
+        let path = block.data.file.url
+        await Img.findOneAndUpdate({path}, {hasArticle: true})
+      }
+    }
+  } catch (err:any) {
+    console.log(err.message)
+    res.redirect('/error500')
+    return
+  }
+
+
   body = JSON.stringify(body)
   sideBody = JSON.stringify(sideBody)
 
@@ -83,10 +114,12 @@ module.exports.newArticle_post = async (req:any, res:any) => {
   if (!token) 
   {
     res.redirect('/auth/login')
+    return
   }
   jwt.verify(token, secretString, async (err:any, decodedToken:any): Promise<void> => {
     if (err) {
       res.redirect('/auth/login')
+      return
     }
     try {
       const user = await User.findById(decodedToken.id)
@@ -100,6 +133,8 @@ module.exports.newArticle_post = async (req:any, res:any) => {
         lastEdited, 
         body,
         sideBody,
+        views: 0,
+        edits: 1,
       })
 
       user.recentlyEditedArticles = updateRecentlyEdited(user.recentlyEditedArticles, article.title, article.url, article.lastEdited)
@@ -109,6 +144,7 @@ module.exports.newArticle_post = async (req:any, res:any) => {
     catch (err:any) {
       if (err.code == 11000) {
         res.status(424).send("Given article title was not unique")
+        return
       }
         console.log(err)
         res.status(424).send("Unknown error")
@@ -123,11 +159,23 @@ module.exports.newArticle_post = async (req:any, res:any) => {
 module.exports.viewArticle_get = async (req:any, res:any) => {
     const url = decodeURI(req.params.articleUrl)
     
-    if (!url) res.status(404).redirect('/error404')
+    if (!url) {
+      res.status(404).redirect('/error404')
+      return
+    }
 
-    const article = await Article.findOne({url}, 'title lastEdited lastAuthor url')
+    const article = await Article.findOne({url}, 'title lastEdited lastAuthor url views edits')
 
-    if (!article) res.status(404).redirect('/error404')
+    if (!article) {
+      res.status(404).redirect('/error404')
+      return
+    }
+
+    // incrementing article views parameter
+    if (!article.views) article.views = 0
+
+    article.views = article.views + 1;
+    await article.save() 
 
     res.render('article/articleView', {article})
 }
@@ -136,11 +184,17 @@ module.exports.viewArticle_post = async (req:any, res:any) => {
 
   const url = decodeURI(req.params.articleUrl)
   
-  if (!url) res.status(404).json({error: 'there was a problem'})
+  if (!url) {
+    res.status(404).json({error: 'there was a problem'})
+    return
+  }
 
   const article = await Article.findOne({url}, 'body sideBody')
 
-  if (!article) res.status(404).json({error: 'there was a problem'})
+  if (!article) {
+    res.status(404).json({error: 'there was a problem'})
+    return
+  }
 
   res.status(201).json(article)
 }
@@ -148,11 +202,17 @@ module.exports.viewArticle_post = async (req:any, res:any) => {
 module.exports.editArticle_get = async (req:any, res:any) => {
   const url = decodeURI(req.params.articleUrl)
   
-  if (!url) res.status(404).redirect('/error404')
+  if (!url) {
+    res.status(404).redirect('/error404')
+    return
+  }
 
   const article = await Article.findOne({url}, 'title lastEdited lastAuthor url')
 
-  if (!article) res.status(404).redirect('/error404')
+  if (!article) {
+    res.status(404).redirect('/error404')
+    return
+  }
 
   res.render('article/articleEdit', {article})
 }
@@ -176,11 +236,15 @@ module.exports.editArticle_post = async (req:any, res:any) => {
   body = JSON.stringify(body)
   sideBody = JSON.stringify(sideBody)
 
-  if (!url || !token) res.status(404).json({error: 'There has been an error'})
+  if (!url || !token) {
+    res.status(404).json({error: 'There has been an error'})
+    return
+  }
 
   jwt.verify(token, secretString, async (err:any, decodedToken:any): Promise<void> => {
     if (err) {
       res.status(404).json({error: 'There has been an error'})
+      return
     }
     try {
       const user = await User.findById(decodedToken.id)
@@ -196,6 +260,8 @@ module.exports.editArticle_post = async (req:any, res:any) => {
       article.sideBody = sideBody
       article.lastEdited = lastEdited
       article.lastAuthor = lastAuthor
+      if (!article.edits) article.edits = 0;
+      article.edits ++
       user.recentlyEditedArticles = updateRecentlyEdited(user.recentlyEditedArticles, article.title, article.url, article.lastEdited)
       article.save()
       user.save()
@@ -207,6 +273,47 @@ module.exports.editArticle_post = async (req:any, res:any) => {
         res.status(424).json({error: 'There has been an error'})
     }   
 })
+}
+module.exports.randomArticle_get = async (req:any, res:any) => {
+  const articles_count = await Article.countDocuments({})
+
+  if (articles_count == 0) {
+    res.status(404).render('404')
+    return
+  }
+
+  const articles_to_skip = Math.floor(Math.random() * articles_count)
+
+  const random_article = await Article.findOne({}).skip(articles_to_skip)
+
+  res.redirect('/article/url/' + random_article.url)
+}
+module.exports.searchArticle_get = async (req:any, res:any) => {
+
+  const searchPhrase = req.params.searchPhrase
+
+  try {
+    const matchingArticles = await Article.find({ $text: {$search: searchPhrase }}, 'title url lastAuthor lastEdited edits').limit(20)
+  
+    res.status(200).render('article/articleSearch', {searchPhrase, matchingArticles})
+  } catch (err: any) {
+
+    console.log(err.message)
+    res.status(500).render('500')
+  }
+
+
+}
+module.exports.mostPopularArticles_get = async (req:any, res:any) => {
+  try {
+    const most_viewed_articles = await Article.find({}, 'title url lastAuthor lastEdited views edits').sort({views: -1}).limit(10)
+    const most_edited_articles = await Article.find({}, 'title url lastAuthor lastEdited views edits').sort({edits: -1}).limit(10)
+
+    res.status(201).render('article/articleMostPopular', {most_viewed_articles, most_edited_articles})
+  }
+  catch (err:any) {
+    res.status(500).redirect('/error500')
+  }
 }
 
 // this function takes care of adding articles to the recently edited array

@@ -26,7 +26,15 @@ const ArticleModel = new mongoose.Schema({
     sideBody: {
         type: String,
         required: false
+    },
+    views: {
+        type: Number
+    },
+    edits: {
+        type: Number
     }
 });
+// used in searching for an article
+ArticleModel.index({ title: 'text' });
 var Article = mongoose.model('article', ArticleModel);
 module.exports = Article;

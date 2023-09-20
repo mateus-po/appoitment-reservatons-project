@@ -34,7 +34,7 @@ const UserModel = new mongoose.Schema({
     description: {
         type: String,
         required: false,
-        maxLength: 300
+        maxLength: 800
     },
     avatarPath: {
         type: String,

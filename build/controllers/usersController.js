@@ -157,6 +157,37 @@ module.exports.userEdit_post = (req, res) => __awaiter(void 0, void 0, void 0, f
         res.redirect('/auth/login');
     }
 });
+// deletes user from database, the article posted by user stay intact
+module.exports.userDelete = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const token = req.cookies.jwt;
+    if (!token) {
+        res.redirect('/auth/login');
+        return;
+    }
+    jwt.verify(token, secretString, (err, decodedToken) => __awaiter(void 0, void 0, void 0, function* () {
+        if (err) {
+            res.redirect('/auth/login');
+            return;
+        }
+        try {
+            const user = yield User.findById({ _id: decodedToken.id });
+            if (user.avatarPath) {
+                // deletes only if the file exists
+                if (fs.existsSync(absolutePath + "/public" + user.avatarPath)) {
+                    fs.unlinkSync(absolutePath + "/public" + user.avatarPath);
+                }
+            }
+            const username = user.nickname;
+            yield user.deleteOne();
+            res.status(201).send(username);
+        }
+        catch (err) {
+            console.log(err.message);
+            res.redirect('/auth/login');
+            return;
+        }
+    }));
+});
 module.exports.userEditAvatar_post = (req, res) => {
     const token = req.cookies.jwt;
     // checkng if the user is logged in with a correct JWT 

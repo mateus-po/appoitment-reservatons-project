@@ -25,6 +25,7 @@
                 <h4><a href="/article/url/<%= article.url %>/edit">Edit <img class="edit-icon" src="/img/icon-edit.png" alt="edit icon"></a></h4>
             <% } %>
             <h6>Last edited <%= article.lastEdited %> by <a href="/users/profile/<%= article.lastAuthor %>"><%= article.lastAuthor %></a></h6>
+            <h6>Views: <%= article.views %>, Edits: <%= article.edits %></h6>
 
             <div id="editorjs"></div>
 

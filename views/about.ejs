@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/head.ejs') %>
+    <link rel="stylesheet" href="/styles/article-layout.css">
+    <link rel="stylesheet" href="/styles/about.css">
+    <title>About Gatopedia</title>
+    <link rel="icon" type="image/x-icon" href="/img/icon-paw.png">
+</head>
+<body>
+
+
+    <%- include('partials/header.ejs') %>
+
+    <div id="Container">
+
+        <%- include('partials/side-menu.ejs') %>
+
+        <div id="Middle">
+
+
+            <h1>About Gatopedia:</h1>
+            <hr>
+            <p>
+                Gatopedia is a Wikipedia-like website dedicated to (in theory) cats. The page was created by <a href="https://github.com/mateus-po">mateus-po</a> and its humble author is well aware that Gatopedia is far from perfect. Nevertheless, if anyone is interested in getting to know the ins and outs of Gatopedia, they can view its full source code <a href="https://github.com/mateus-po/gatopedia">here</a>.
+            </p>
+
+            <img src="/img/horisontal-cat.png" alt="hoirisontal cat">
+            <p>
+                Gatopedia was created using Node.js. It uses MongoDB as a database. The usage of packages is rather extensive, so I won't go over it in detail here - a list of full dependencies can be found on Gatopedia repository (link above). One package that helped the most in creating the page was <a href="https://editorjs.io">Editor.js</a>. It allows to easily create and configure rich text editors. It also is open-source, so I defenitely recommend to check it out.
+            </p>
+
+            <br><br>
+
+            <p>
+                The main reason behind creating Gatopedia was to learn and practise back-end skills (and to have some fun).
+            </p>
+            
+
+
+        </div>
+
+        <div id="Right">
+            <h2>Did you know...</h2>
+            <img src="/img/Cat-PNG-6.png" alt="flying cat">
+            <h2>... that Gatopedia author simply adores cats?</h2>
+            The theme of this project makes a lot more sense now.
+        </div>
+
+    </div>
+
+<%- include('partials/footer.ejs') %>
+
+
+
+</body>
+</html>

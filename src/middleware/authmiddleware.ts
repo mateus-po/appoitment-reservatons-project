@@ -10,8 +10,21 @@ module.exports.requireAuth = async (req:any, res:any, next:any) => {
         jwt.verify(token, secretString, async (err:any, decodedToken:any): Promise<void> => {
             if (err) {
                 res.redirect('/auth/login')
+                return
             }
             else {
+                try {
+                    const user = await User.findById({_id: decodedToken.id})
+                    if (!user) {
+                        res.redirect('/auth/login')
+                        return
+                    }
+                }
+                catch (err) {
+                    console.log(err)
+                    res.redirect('/auth/login')
+                    return
+                }
                 next()
             }
         })
