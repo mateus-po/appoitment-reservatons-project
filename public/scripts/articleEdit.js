@@ -3,6 +3,7 @@ const Header = window.Header
 const Table = window.Table
 const List = window.List
 const SaveButton = document.getElementById('Save')
+const DeleteButton = document.getElementById('Delete-Article-Button')
 
 sideReady = async () => {
     try {
@@ -27,8 +28,6 @@ sideReady = async () => {
     }
 
 }
-
-
 
 class Image extends ImageTool {
   // image destructor
@@ -131,4 +130,20 @@ const save = async (alertingMode = true) => {
     }
 }
 
+const deleteArticle = async () => {
+
+  const res = await fetch(location.href, {
+    method: 'DELETE'
+  })
+
+  if (res.status === 201) {
+    alert("Article has been successfully deleted")
+    location.replace('/')
+  }
+  else {
+    alert("There has been unknown error")
+    location.replace('/')
+  }
+}
 SaveButton.addEventListener('click', save)
+DeleteButton.addEventListener('click', deleteArticle)

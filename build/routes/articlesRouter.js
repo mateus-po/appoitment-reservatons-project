@@ -35,6 +35,8 @@ router.post('/article/url/:articleUrl', articlesController.viewArticle_post);
 router.get('/article/url/:articleUrl/edit', requireAuth, articlesController.editArticle_get);
 // saving changes made to the post
 router.post('/article/url/:articleUrl/edit', requireAuth, articlesController.editArticle_post);
+// deletes an article
+router.delete('/article/url/:articleUrl/edit', requireAuth, articlesController.editArticle_delete);
 // redirects to a random article
 router.get('/article/random', articlesController.randomArticle_get);
 // redirects to search page used to search for articles 

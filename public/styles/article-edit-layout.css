@@ -13,3 +13,19 @@
 button {
     font-size: 15px;
 }
+#Delete-Article-Button {
+    margin-top: 20px;
+    padding: 6px;
+    background-color: red;
+    color: white;
+    font-weight: bold;
+    border-radius: 3px;
+    border-color: red;
+}
+button:hover {
+    cursor: pointer;
+}
+#Delete-Article-Button:hover {
+    background-color: rgb(255, 36, 36);
+    border-color: rgb(255, 36, 36);
+}

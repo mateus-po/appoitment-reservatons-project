@@ -55,7 +55,7 @@ module.exports.deleteFile_delete = (req, res) => __awaiter(void 0, void 0, void 
 //renders index page with data about ten newest created articles
 module.exports.viewIndex_get = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // getting ten newest articles
-    const newest_articles = yield Article.find({}, 'title url lastAuthor lastEdited').sort({ lastEdited: -1 }).limit(10);
+    const newest_articles = yield Article.find({}, 'title url lastAuthor lastEdited views edits').sort({ lastEdited: -1 }).limit(10);
     res.render('index', { newest_articles });
 });
 // allows checking if there is already an article with given title
@@ -97,6 +97,12 @@ module.exports.newArticle_post = (req, res) => __awaiter(void 0, void 0, void 0,
     // images having hasArticle === false will be periodically deleted as a means of garbage collecting
     try {
         for (let block of body.blocks) {
+            if (block.type == 'image') {
+                let path = block.data.file.url;
+                yield Img.findOneAndUpdate({ path }, { hasArticle: true });
+            }
+        }
+        for (let block of sideBody.blocks) {
             if (block.type == 'image') {
                 let path = block.data.file.url;
                 yield Img.findOneAndUpdate({ path }, { hasArticle: true });
@@ -210,6 +216,28 @@ module.exports.editArticle_post = (req, res) => __awaiter(void 0, void 0, void 0
     if (sideBody.blocks.length == 0) {
         sideBody.blocks = [{ id: "dvSFGiwGIy", type: "paragraph", data: { text: "" } }];
     }
+    // assigning true to the all images hasArticle property
+    // used for avoiding deletion of images that are assigned to some articles
+    // images having hasArticle === false will be periodically deleted as a means of garbage collecting
+    try {
+        for (let block of body.blocks) {
+            if (block.type == 'image') {
+                let path = block.data.file.url;
+                yield Img.findOneAndUpdate({ path, hasArticle: false }, { hasArticle: true });
+            }
+        }
+        for (let block of sideBody.blocks) {
+            if (block.type == 'image') {
+                let path = block.data.file.url;
+                yield Img.findOneAndUpdate({ path, hasArticle: false }, { hasArticle: true });
+            }
+        }
+    }
+    catch (err) {
+        console.log(err.message);
+        res.redirect('/error500');
+        return;
+    }
     body = JSON.stringify(body);
     sideBody = JSON.stringify(sideBody);
     if (!url || !token) {
@@ -246,6 +274,44 @@ module.exports.editArticle_post = (req, res) => __awaiter(void 0, void 0, void 0
         }
     }));
 });
+module.exports.editArticle_delete = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const url = decodeURI(req.params.articleUrl);
+    if (!url) {
+        res.status(404).redirect('/error404');
+        return;
+    }
+    try {
+        const article = yield Article.findOne({ url });
+        const body = JSON.parse(article.body);
+        const sideBody = JSON.parse(article.sideBody);
+        try {
+            for (let block of body.blocks) {
+                if (block.type == 'image') {
+                    let path = block.data.file.url;
+                    yield Img.findOneAndDelete({ path });
+                    fs.unlinkSync(absolutePath + "/public" + path);
+                }
+            }
+            for (let block of sideBody.blocks) {
+                if (block.type == 'image') {
+                    let path = block.data.file.url;
+                    yield Img.findOneAndDelete({ path });
+                    fs.unlinkSync(absolutePath + "/public" + path);
+                }
+            }
+        }
+        catch (err) {
+            console.log(err.message);
+            res.redirect('/error500');
+            return;
+        }
+        yield Article.findOneAndDelete({ url });
+        res.status(201).send('success');
+    }
+    catch (err) {
+        res.status(500).json({ error: `Couldn't delete article with given url: ${url}` });
+    }
+});
 module.exports.randomArticle_get = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const articles_count = yield Article.countDocuments({});
     if (articles_count == 0) {
@@ -259,7 +325,7 @@ module.exports.randomArticle_get = (req, res) => __awaiter(void 0, void 0, void 
 module.exports.searchArticle_get = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const searchPhrase = req.params.searchPhrase;
     try {
-        const matchingArticles = yield Article.find({ $text: { $search: searchPhrase } }, 'title url lastAuthor lastEdited edits').limit(20);
+        const matchingArticles = yield Article.find({ $text: { $search: searchPhrase } }, 'title url lastAuthor lastEdited views edits').limit(20);
         res.status(200).render('article/articleSearch', { searchPhrase, matchingArticles });
     }
     catch (err) {

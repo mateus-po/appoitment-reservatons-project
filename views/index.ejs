@@ -38,7 +38,8 @@
                     <a href="/article/url/<%= article.url %>" class="article-link">
                         <div class="article-box">
                             <h3><%= article.title %></h3>
-                            recently edited by: <%= article.lastAuthor %> at: <%= article.lastEdited %>
+                            recently edited by: <%= article.lastAuthor %> at: <%= article.lastEdited %><br>
+                            Views: <%= article.views %>, Edits: <%= article.edits %>
                         </div>
                     </a>
                 <% } %>

@@ -44,7 +44,7 @@ module.exports.deleteFile_delete = async (req:any, res:any) => {
 module.exports.viewIndex_get = async (req:any, res:any) => {
   // getting ten newest articles
 
-  const newest_articles = await Article.find({}, 'title url lastAuthor lastEdited').sort({ lastEdited: -1 }).limit(10)
+  const newest_articles = await Article.find({}, 'title url lastAuthor lastEdited views edits').sort({ lastEdited: -1 }).limit(10)
 
   res.render('index', {newest_articles})
 }
@@ -94,6 +94,12 @@ module.exports.newArticle_post = async (req:any, res:any) => {
   // images having hasArticle === false will be periodically deleted as a means of garbage collecting
   try {
     for (let block of body.blocks) {
+      if (block.type == 'image') {
+        let path = block.data.file.url
+        await Img.findOneAndUpdate({path}, {hasArticle: true})
+      }
+    }
+    for (let block of sideBody.blocks) {
       if (block.type == 'image') {
         let path = block.data.file.url
         await Img.findOneAndUpdate({path}, {hasArticle: true})
@@ -233,6 +239,28 @@ module.exports.editArticle_post = async (req:any, res:any) => {
     sideBody.blocks = [{id:"dvSFGiwGIy",type:"paragraph",data:{text:""}}]
   }
 
+  // assigning true to the all images hasArticle property
+  // used for avoiding deletion of images that are assigned to some articles
+  // images having hasArticle === false will be periodically deleted as a means of garbage collecting
+  try {
+    for (let block of body.blocks) {
+      if (block.type == 'image') {
+        let path = block.data.file.url
+        await Img.findOneAndUpdate({path, hasArticle:false}, {hasArticle: true})
+      }
+    }
+    for (let block of sideBody.blocks) {
+      if (block.type == 'image') {
+        let path = block.data.file.url
+        await Img.findOneAndUpdate({path, hasArticle:false}, {hasArticle: true})
+      }
+    }
+  } catch (err:any) { 
+    console.log(err.message)
+    res.redirect('/error500')
+    return
+  }
+
   body = JSON.stringify(body)
   sideBody = JSON.stringify(sideBody)
 
@@ -274,6 +302,48 @@ module.exports.editArticle_post = async (req:any, res:any) => {
     }   
 })
 }
+module.exports.editArticle_delete = async (req:any, res:any) => {
+
+  const url = decodeURI(req.params.articleUrl)
+  
+  if (!url) {
+    res.status(404).redirect('/error404')
+    return
+  }
+
+  try {
+    const article = await Article.findOne({url})
+    const body = JSON.parse(article.body)
+    const sideBody = JSON.parse(article.sideBody)
+
+    try {
+      for (let block of body.blocks) {
+        if (block.type == 'image') {
+          let path = block.data.file.url
+          await Img.findOneAndDelete({path})
+          fs.unlinkSync(absolutePath + "/public" + path)
+        }
+      }
+      for (let block of sideBody.blocks) {
+        if (block.type == 'image') {
+          let path = block.data.file.url
+          await Img.findOneAndDelete({path})
+          fs.unlinkSync(absolutePath + "/public" + path)
+        }
+      }
+    } catch (err:any) { 
+      console.log(err.message)
+      res.redirect('/error500')
+      return
+    }
+
+    await Article.findOneAndDelete({url})
+    res.status(201).send('success')
+  } catch (err:any) {
+    res.status(500).json({error: `Couldn't delete article with given url: ${url}`})
+  }
+
+}
 module.exports.randomArticle_get = async (req:any, res:any) => {
   const articles_count = await Article.countDocuments({})
 
@@ -293,7 +363,7 @@ module.exports.searchArticle_get = async (req:any, res:any) => {
   const searchPhrase = req.params.searchPhrase
 
   try {
-    const matchingArticles = await Article.find({ $text: {$search: searchPhrase }}, 'title url lastAuthor lastEdited edits').limit(20)
+    const matchingArticles = await Article.find({ $text: {$search: searchPhrase }}, 'title url lastAuthor lastEdited views edits').limit(20)
   
     res.status(200).render('article/articleSearch', {searchPhrase, matchingArticles})
   } catch (err: any) {
