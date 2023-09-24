@@ -24,6 +24,7 @@ module.exports.userPage_get = async (req:any, res:any) => {
     res.render('user/userPage', {user, article_titles, article_urls, article_time})
     }
 }
+
 // displays an user edit page
 module.exports.userEdit_get = async (req:any, res:any) => {
     res.render('user/userEdit')
@@ -37,16 +38,12 @@ module.exports.userEdit_post = async (req:any, res:any) => {
     const oldPassword = req.body.oldPassword
     const newPassword = req.body.newPassword
     
-
-    // checkng if the user is logged in with a correct JWT 
     if (token) {
         jwt.verify(token, secretString, async (err:any, decodedToken:any): Promise<void> => {
             if (!err) {
-                // if newEmail is not undefined - it means email is to be edited
                 if (newEmail) {
                     try {
                         const user = await User.findById(decodedToken.id)
-                        // checking if the given email is valid and different from previous email
                         if (newEmail == user.email) {
                             res.status(400).send({error:'Given e-mail is the same as the previous e-mail'})
                             return
@@ -55,7 +52,6 @@ module.exports.userEdit_post = async (req:any, res:any) => {
                             res.status(400).send({error: `${newEmail} is not a correct e-mail`})
                             return
                         }
-                        // updating users email
                         await User.findOneAndUpdate({_id: decodedToken.id,}, {email: newEmail})
                         res.status(201).send("success")
                     }
@@ -68,11 +64,9 @@ module.exports.userEdit_post = async (req:any, res:any) => {
                         res.status(400).send({error: err.message})
                     }   
                 }
-                // simillarly, if newNickname is not undefined - it means nickname is to be edited
                 else if (newNickname) {
                     try {
                         const user = await User.findById(decodedToken.id)
-                        // checking if the given nickname is valid and different from previous nickname
                         if (newNickname == user.nickname) {
                             res.status(400).send({error:'Given nickname is the same as the previous nickname'})
                             return
@@ -81,7 +75,6 @@ module.exports.userEdit_post = async (req:any, res:any) => {
                             res.status(400).send({error: "Nickname consists of forbidden characters"})
                             return
                         }
-                        // updating users nickname
                         await User.findOneAndUpdate({_id: decodedToken.id,}, {nickname: newNickname})
                         res.status(201).send("success")
                     }
@@ -97,12 +90,10 @@ module.exports.userEdit_post = async (req:any, res:any) => {
                 else if (newDescription) {
                     try {
                         const user = await User.findById(decodedToken.id)
-                        // checking if the given nickname is valid and different from previous nickname
                         if (newDescription == user.description) {
                             res.status(400).send({error:'Given description is the same as the previous description'})
                             return
                         }
-                        // updating users description
                         await User.findOneAndUpdate({_id: decodedToken.id,}, {description: newDescription})
                         res.status(201).send("success")
                     }
@@ -113,12 +104,10 @@ module.exports.userEdit_post = async (req:any, res:any) => {
                 else if (newPassword && oldPassword) {
                     try {
                         const user = await User.findById(decodedToken.id)
-                        // checking if the oldPassword matches the password stored in database 
                         if (! await bcrypt.compare(oldPassword, user.password)) {
                             res.status(400).send({error:'Given current password is incorrect'})
                             return
                         }
-                        // checking if the new password meets safe password requirements
                         if (! isStrongPassword(newPassword, {
                             minLength: 8,
                             minLowercase: 1,
@@ -128,7 +117,6 @@ module.exports.userEdit_post = async (req:any, res:any) => {
                                 res.status(400).send({error: "Given password is not strong"})
                                 return
                             }
-                        // updating users password
                         let hashed_password = await bcrypt.hash(newPassword, saltrounds)
                         await User.findOneAndUpdate({_id: decodedToken.id,}, {password: hashed_password})
                         res.status(201).send("success")
@@ -143,17 +131,16 @@ module.exports.userEdit_post = async (req:any, res:any) => {
                 
             }
             else {
-                // if any JWT error occurs, the page redirects user to the login page
                 res.redirect('/auth/login')
             }
 
         })
     }
     else {
-        // if user has no JWT token, the page redirects user to the login page
         res.redirect('/auth/login')
     }
 }
+
 // deletes user from database, the article posted by user stay intact
 module.exports.userDelete = async (req:any, res:any) => {
     const token = req.cookies.jwt
@@ -174,7 +161,6 @@ module.exports.userDelete = async (req:any, res:any) => {
             const user = await User.findById({_id: decodedToken.id})
 
             if (user.avatarPath) {
-                // deletes only if the file exists
                 if (fs.existsSync( absolutePath + "/public" + user.avatarPath )) {
                     fs.unlinkSync(absolutePath + "/public" + user.avatarPath)
                 }
@@ -192,7 +178,6 @@ module.exports.userDelete = async (req:any, res:any) => {
             return
         }
 
-
     })
 
 }
@@ -200,14 +185,12 @@ module.exports.userDelete = async (req:any, res:any) => {
 module.exports.userEditAvatar_post = (req:any, res:any) => {
     const token = req.cookies.jwt
 
-    // checkng if the user is logged in with a correct JWT 
     if (token) {
         jwt.verify(token, secretString, async (err:any, decodedToken:any): Promise<void> => {
             if (!err) {
                 try {
                     const user = await User.findById(decodedToken.id)
                     if (user.avatarPath) {
-                        // deletes only if the file exists
                         if (fs.existsSync( absolutePath + "/public" + user.avatarPath )) {
                             fs.unlinkSync(absolutePath + "/public" + user.avatarPath)
                         }
@@ -229,7 +212,6 @@ module.exports.userEditAvatar_post = (req:any, res:any) => {
         
     }
     else {
-        // if user has no JWT token, the page redirects user to the login page
         res.redirect('/auth/login')
     }
 }

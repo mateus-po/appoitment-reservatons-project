@@ -38,8 +38,8 @@ const main_editor = new EditorJS({
           inlineToolbar: true,
           config: {
             endpoints: {
-              byFile: '/uploadFile', // Your backend file uploader endpoint
-              byUrl: '/fetchUrl', // Your endpoint that provides uploading by Url
+              byFile: '/uploadFile', 
+              byUrl: '/fetchUrl', 
             }
           },
         },
@@ -67,8 +67,8 @@ const side_editor = new EditorJS({
         inlineToolbar: true,
         config: {
           endpoints: {
-            byFile: '/uploadFile', // Your backend file uploader endpoint
-            byUrl: '/fetchUrl', // Your endpoint that provides uploading by Url
+            byFile: '/uploadFile', 
+            byUrl: '/fetchUrl', 
           }
         },
       },

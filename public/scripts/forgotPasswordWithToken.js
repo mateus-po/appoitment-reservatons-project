@@ -7,7 +7,6 @@ const passwordAgainInput = document.getElementById('PasswordAgain')
 form.addEventListener('submit', async (e) => {
     e.preventDefault()
 
-     // getting the values
      const password = passwordInput.value;
      const password_again = passwordAgainInput.value;
  
@@ -36,7 +35,6 @@ form.addEventListener('submit', async (e) => {
          error_box.innerHTML = ""
      }
  
-     // checking if both given passwords are the same
      if (password !== password_again) {
          passwordInput.classList.add("invalid")
          passwordAgainInput.classList.add("invalid")

@@ -6,7 +6,6 @@ var cookieParser = require('cookie-parser')
 var nodemailer = require('nodemailer')
 var { secretString, maxTokenAge, saltrounds, hostEmailAddress, hostEmailPassword } = require ("../globalVariables")
 
-// function that creates a token for newly singned up or logged in users
 function createToken(id:string) : string {
     return jwt.sign({id}, secretString, {
         expiresIn: maxTokenAge
@@ -24,7 +23,6 @@ const transporter = nodemailer.createTransport({
 
 // signup_get just renders the signup page
 module.exports.signup_get = (req:any, res:any) => {
-    // if there is a logged user, they shouldn't be able to see this site
     if (res.locals.loggedUser) {
         res.redirect('/')
     }
@@ -35,20 +33,17 @@ module.exports.signup_get = (req:any, res:any) => {
 // if data is valid creates a user and saves it to the database
 // additionally is responsible for hashing the password
 module.exports.signup_post = async (req:any, res:any) => {
-    // deletes all the users
-    // User.collection.deleteMany({})
 
     const email:string = req.body.email
     const nickname:string = req.body.nickname
     const password:string = req.body.password
-    // if either email or password are undefined, it means that an incorrect POST request was send
+
     if (email === undefined 
         || password === undefined 
         || nickname === undefined) {
         res.status(422).json({error: "Invalid POST request"})
         return
     }
-    // checking if the given password meets safe password requirements
     if (! isStrongPassword(password, {
         minLength: 8,
         minLowercase: 1,
@@ -58,13 +53,10 @@ module.exports.signup_post = async (req:any, res:any) => {
             res.status(422).json({error: "Given password is not strong"})
             return
         }
-    // chcecking if the given email is valid
     if (! isEmail(email)) {
         res.status(422).json({error:"Given e-mail is not valid"})
         return
     }
-    // checking if the given nickname consists only of letters, digits and 
-    // "-" and "_" symbols
     if (! /^[0-9a-zA-Z_-]*$/.test(nickname)) {
         res.status(422).json({error:"Given nickname contains forbidden characters"})
         return
@@ -81,14 +73,8 @@ module.exports.signup_post = async (req:any, res:any) => {
         return
     }
 
-
-    // trying to create user in the database - if any error occurres, it 
-    // means that the passed data is invalid
-
-    // creating a token, that encodes all the user data
     const token = jwt.sign({email, nickname, password}, secretString, { expiresIn: '10m' })
 
-    // sending and email with given token, so that user can validate email account
     const mailConfigurations = {
   
         from: hostEmailAddress,
@@ -97,7 +83,6 @@ module.exports.signup_post = async (req:any, res:any) => {
       
         subject: 'Validate your email address',
           
-        // This would be the text of email body
         text: `Hello ${nickname}!\nThere is only one step left to complete your Gatopedia registration. You only need to veryfy your email address. You can do it by simply clicking this link: http://localhost:3000/auth/verify/${token}`
           
     };
@@ -114,9 +99,7 @@ module.exports.signup_post = async (req:any, res:any) => {
 
 }
 
-// login_get just renders the login page
 module.exports.login_get = (req:any, res:any) => {
-    // if there is a logged user, they shouldn't be able to see this site
     if (res.locals.loggedUser) {
         res.redirect('/')
     }
@@ -146,11 +129,11 @@ module.exports.logout_get = (req:any, res:any) => {
     res.cookie('jwt', '', {maxAge: 1})
     res.redirect('/')
 }
-// renders page that says that email must be verified
+
 module.exports.verify_get = (req:any, res:any) => {
     res.render('auth/verify')
 }
-// verifies given token and creates account if everything is valid
+
 module.exports.verifyToken_get = (req:any, res:any) => {
 
     const verifyToken = req.params.verifyToken
@@ -184,7 +167,6 @@ module.exports.successfulVerification_get = (req:any, res:any) => {
 }
 
 module.exports.forgotPassword_get = (req:any, res:any) => {
-    // if there is a logged user, they shouldn't be able to see this site
     if (res.locals.loggedUser) {
         res.redirect('/')
     }
@@ -193,7 +175,6 @@ module.exports.forgotPassword_get = (req:any, res:any) => {
 
 module.exports.forgotPassword_post = async (req:any, res:any) => {
 
-    // if there is a logged user, they shouldn't be able to see this site
     if (res.locals.loggedUser) {
         return
     }
@@ -215,7 +196,6 @@ module.exports.forgotPassword_post = async (req:any, res:any) => {
 
         const token = jwt.sign({id: user._id}, secretString, { expiresIn: '10m' })
 
-        // sending and email with given token, so that user can validate email account
         const mailConfigurations = {
     
             from: hostEmailAddress,
@@ -224,7 +204,6 @@ module.exports.forgotPassword_post = async (req:any, res:any) => {
         
             subject: 'Reset your password',
             
-            // This would be the text of email body
             text: `Hello ${user.nickname}!\n There has been a request to change a password tied to your Gatopedia account.\nYou can change your password by following this link: http://localhost:3000/auth/forgot-password/${token}\nIf it wasn't you who made this request, just ignore this message\nHave a great day!\nGatopedia`
             
         };
@@ -245,8 +224,6 @@ module.exports.forgotPassword_post = async (req:any, res:any) => {
         console.log(err.message)
         res.status(500).json({error:"Internal server error"})
     }
-
-
 
 }
 
@@ -302,7 +279,6 @@ module.exports.forgotPasswordWithToken_post = async (req:any, res:any) => {
 
                 const new_password = req.body.password
                 
-                // if password doens't meet safe password requirements
                 if (! isStrongPassword(new_password, {
                     minLength: 8,
                     minLowercase: 1,

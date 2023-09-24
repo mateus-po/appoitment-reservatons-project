@@ -7,11 +7,11 @@ let mainReady = () => {}
 let sideReady = () => {}
 
 class Image extends ImageTool {
+
   // image destructor
-  // if an image is deleted during editing an article, this function fires
   async destroy() {
     if (!this._data.file.url) return
-    // sending a requiest to a server and awaiting a response
+  
     try {
         const res = await fetch('/deleteFile', {
             method: 'DELETE',
@@ -38,8 +38,8 @@ const main_editor = new EditorJS({
           inlineToolbar: true,
           config: {
             endpoints: {
-              byFile: '/uploadFile', // Your backend file uploader endpoint
-              byUrl: '/fetchUrl', // Your endpoint that provides uploading by Url
+              byFile: '/uploadFile', 
+              byUrl: '/fetchUrl', 
             }
           },
         },
@@ -67,8 +67,8 @@ const side_editor = new EditorJS({
         inlineToolbar: true,
         config: {
           endpoints: {
-            byFile: '/uploadFile', // Your backend file uploader endpoint
-            byUrl: '/fetchUrl', // Your endpoint that provides uploading by Url
+            byFile: '/uploadFile', 
+            byUrl: '/fetchUrl', 
           }
         },
       },

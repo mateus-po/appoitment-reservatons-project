@@ -1,5 +1,5 @@
 # Gatopedia
-Gatopedia is a Wikipedia-like site dedicated to (in theory) cats created to showcase web development skills. It allows users to create an account and to add/edit articles of their choice. Authentication is based on JWT technology.
+Gatopedia is a Wikipedia-like site dedicated to cats. It was created to showcase web development skills. Gatopedia allows users to create an account and to add/edit articles of their choice. Authentication is based on JWT technology.
 
 # Page overview with screenshots
 ## Index page view
@@ -41,7 +41,7 @@ linkre displayed:
 
 ![Article page](/readme-screenshots/article.png "Article page of Gatopedia")
 
-Users can also search for articles. Searching is only executed in article titles. It uses built-in search options that are available on MongoDB indexes. Search view looks like this:
+Users can also search for articles. Searching is only executed in article titles. It uses built-in search options that are available on MongoDB search indexes. Search view looks like this:
 
 ![Search page](/readme-screenshots/search.png "Search page of Gatopedia")
 ## Side menu options:

@@ -37,17 +37,14 @@ const UserModel = new mongoose.Schema({
     }
 })
 
-// static method 
 // it tries to find a user with matching email and password in the database
 UserModel.statics.login = async function (email:string, password:string):Promise <{_id:string, email:string, nickname:string, password:string}> {
 
     const user = await User.findOne({email: email}, "_id email nickname password")
 
-    // if there is no user with given email
     if (user === null) {
         throw Error('incorrect e-mail')
     }
-    // if the password doesn't match the hashed password stored in database
     if (! await bcrypt.compare(password, user.password)) {
         throw Error('incorrect password')
     }

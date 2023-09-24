@@ -5,16 +5,13 @@ const passwordAgainInput = document.getElementById('PasswordAgain')
 
 // validates given form input and sends data to the server
 form.addEventListener("submit", async (e) => {
-    // prevents the form from submitting
     e.preventDefault()
 
-    // getting the values
     const email = form.email.value
     const nickname = form.nickname.value
     const password = passwordInput.value;
     const password_again = passwordAgainInput.value;
 
-    // checking if nickname contains only allowed characters
     if (!/^[a-zA-Z0-9_-]*$/.test(nickname)) {
         form.nickname.classList.add("invalid")
         error_box.innerHTML = "Nickname consists of forbidden characters"
@@ -49,7 +46,6 @@ form.addEventListener("submit", async (e) => {
         error_box.innerHTML = ""
     }
 
-    // checking if both given passwords are the same
     if (password !== password_again) {
         passwordInput.classList.add("invalid")
         passwordAgainInput.classList.add("invalid")
@@ -61,7 +57,6 @@ form.addEventListener("submit", async (e) => {
         passwordAgainInput.classList.remove("invalid")
         error_box.innerHTML = ""
     }
-    // sending a requiest to a server and awaiting a response
     try {
         error_box.innerHTML = '<img src="/img/loading.gif">'
         const res = await fetch('/auth/signup', {

@@ -80,7 +80,7 @@ async function submit(type, value, error_box, validate) {
     if (type == "newPassword") {
         data_to_send['oldPassword'] = CurrentPasswordInput.value;
     }
-    // sending a requiest to a server and awaiting a response
+
     try {
         const res = await fetch('/users/edit', {
             method: 'POST',
@@ -121,8 +121,7 @@ const validateDescription = (description) => {
     }
 }
 const validatePassword = (password) => {
-    // chcecking if the given password isn't strong
-    // take notice that the whole condition is negated
+
     if (!(/[a-z]/.test(password)    // at least one lowercase character
     && /[A-Z]/.test(password)       // at least one uppercase character
     && /[!@#$%^&*]/.test(password)  // at least one special character
@@ -180,8 +179,6 @@ AvatarForm.addEventListener('submit', (e) => {
     submit_avatar()
 } )
 
-
-// deleting user
 DeleteUserButton.addEventListener('click', async () => {
     if (confirm("Do you really want to delete your account?", )) {
         const res = await fetch('/users/delete', {

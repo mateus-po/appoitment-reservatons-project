@@ -41,5 +41,4 @@ ArticleModel.index({title:'text'})
 var Article = mongoose.model('article', ArticleModel)
 
 
-
 module.exports = Article

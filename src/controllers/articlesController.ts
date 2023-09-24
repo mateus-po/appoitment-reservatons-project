@@ -9,8 +9,6 @@ var { absolutePath, secretString, rememberedRecentlyEditedArticles } = require('
 // the photos will be moved to public/img/article folder if the article will be saved
 // otherwise the photos will disappear form the tmp polder after a day
 module.exports.uploadFile_post = async (req:any, res:any) => {
-  // req.file is the name of your file in the form above, here 'uploaded_file'
-  // req.body will hold the text fields, if there were any 
   let now = new Date()
   try {
     await Img.create({
@@ -29,6 +27,7 @@ module.exports.uploadFile_post = async (req:any, res:any) => {
 catch (err) { console.log(err) }
 
 }
+
 // it deletes photos from server if user deletes it from the article during editing it
 module.exports.deleteFile_delete = async (req:any, res:any) => {
   try {
@@ -40,14 +39,15 @@ module.exports.deleteFile_delete = async (req:any, res:any) => {
     res.status(424).send(err.message)
   }
 }
+
 //renders index page with data about ten newest created articles
 module.exports.viewIndex_get = async (req:any, res:any) => {
-  // getting ten newest articles
 
   const newest_articles = await Article.find({}, 'title url lastAuthor lastEdited views edits').sort({ lastEdited: -1 }).limit(10)
 
   res.render('index', {newest_articles})
 }
+
 // allows checking if there is already an article with given title
 module.exports.checkTitle_post = async (req:any, res:any) => {
   const article = await Article.findOne({title: req.body.title})
@@ -58,10 +58,9 @@ module.exports.checkTitle_post = async (req:any, res:any) => {
   }
   res.status(400).send('There already exists an article with given name')
 }
+
 // creates a new article and saves it on the database
 module.exports.newArticle_post = async (req:any, res:any) => {
-  // to delete all articles before saving any data
-  // Article.collection.deleteMany({})
 
   let title = req.body.title
 
@@ -80,6 +79,7 @@ module.exports.newArticle_post = async (req:any, res:any) => {
   let lastEdited = req.body.articleData.time
   let body = req.body.articleData
   let sideBody = req.body.sideBody
+
   // adding some data into body and sideBody objects
   // it prevents the Editor.js form bugging when rendering an empty editor
   if (body.blocks.length == 0) {
@@ -156,9 +156,9 @@ module.exports.newArticle_post = async (req:any, res:any) => {
         res.status(424).send("Unknown error")
         return
     }   
-})
-  
+  })
 }
+
 // loads a page with some data
 // after successfully loading Editor.js module the site will query for the
 // rest of the data via POST request
@@ -177,7 +177,6 @@ module.exports.viewArticle_get = async (req:any, res:any) => {
       return
     }
 
-    // incrementing article views parameter
     if (!article.views) article.views = 0
 
     article.views = article.views + 1;
@@ -204,7 +203,7 @@ module.exports.viewArticle_post = async (req:any, res:any) => {
 
   res.status(201).json(article)
 }
-// does virtually the same as viewArticle_get, but renders different page
+
 module.exports.editArticle_get = async (req:any, res:any) => {
   const url = decodeURI(req.params.articleUrl)
   
@@ -222,6 +221,7 @@ module.exports.editArticle_get = async (req:any, res:any) => {
 
   res.render('article/articleEdit', {article})
 }
+
 module.exports.editArticle_post = async (req:any, res:any) => {
   const url = decodeURI(req.params.articleUrl)
 
@@ -230,6 +230,7 @@ module.exports.editArticle_post = async (req:any, res:any) => {
 
   let body = req.body.articleData
   let sideBody = req.body.sideBody
+  
   // adding some data into body and sideBody objects
   // it prevents the Editor.js form bugging when rendering an empty editor
   if (body.blocks.length == 0) {
@@ -279,10 +280,6 @@ module.exports.editArticle_post = async (req:any, res:any) => {
 
       let lastAuthor = user.nickname
 
-      // Article.findOneAndUpdate({url}, {body, sideBody, lastEdited, lastAuthor})
-      // console.log(url)
-      // res.status(201).send('success')
-
       const article = await Article.findOne({url})
       article.body = body
       article.sideBody = sideBody
@@ -302,6 +299,7 @@ module.exports.editArticle_post = async (req:any, res:any) => {
     }   
 })
 }
+
 module.exports.editArticle_delete = async (req:any, res:any) => {
 
   const url = decodeURI(req.params.articleUrl)
