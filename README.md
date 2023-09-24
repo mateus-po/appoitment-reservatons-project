@@ -104,7 +104,7 @@ Fill empty quotation marks with your database connect link, chosen email address
 
     tsc
 
-Which will compile all TypeScript into Javascript. Then rund command:
+Which will compile all TypeScript into Javascript. Then run command:
 
     nodemon build/app
 
