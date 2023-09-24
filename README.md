@@ -83,7 +83,7 @@ Most popular page:
 # Setting up Gatopedia
 
 Before setting up Gatopedia locally, you will have to have prepared:
-1. MongoDB database with connect link ready (how to do this [here](https://www.mongodb.com/basics/create-database))
+1. MongoDB database with connect URI string ready (how to do this [here](https://www.mongodb.com/basics/create-database))
 2. Email address from which verification emails will be send (on Gmail you will have to allow access to the mailbox for third-party applications - how to do that [here](https://support.google.com/accounts/answer/185833?hl=en) - save the generated code for later)
 3. [Node.js](https://nodejs.org/en) and [TypeScript](https://www.typescriptlang.org) installed 
 
