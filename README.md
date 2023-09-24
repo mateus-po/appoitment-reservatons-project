@@ -11,7 +11,7 @@ Gatopedia allows users to create accounts on the page. Sign-up form looks like t
 
 ![Sign-up page](/readme-screenshots/signup.png "Sign-up page of Gatopedia")
 
-Sign-up page provides users with email and nickname verification. It also ensures that chosen password is strong. In case of failing those requirements, the users are notified via error box below form. If all credentials are correct (and unique in case of email and nickname), the page sends user a verification link to a given address. Verification link was generated using JWT technology. The account is created only if the user manages to click verification link in 10 minutes from submitting the form. Then the user can log in. Log in form looks like this:
+Sign-up page provides users with email and nickname verification. It also ensures that chosen password is strong. In case of failing those requirements, the users are notified via error box below form. If all credentials are correct (and unique in case of email and nickname), the page sends user a verification link to a given address. Verification link was generated using JWT technology. The account is created only if the user manages to click verification link in 10 minutes from submitting the form. Then the user can log in. Log-in form looks like this:
 
 ![Log-in page](/readme-screenshots/login.png "Log-in page of Gatopedia")
 
@@ -23,7 +23,7 @@ After submitting a correct email addres, user will receive an email with a verif
 
 !["Reset password" page](/readme-screenshots/reset-password.png "Reset password page of Gatopedia")
 
-Assuming everything went smoothly with logging in, an user will be presented with theirs user profile page:
+Assuming everything went smoothly with logging in, an user will be presented with their user profile page:
 
 ![User page](/readme-screenshots/user-loggedin.png "User page of Gatopedia")
 
@@ -31,20 +31,20 @@ Logged in users can edit their account information:
 
 ![User edit page](/readme-screenshots/user-edit.png "User edit page of Gatopedia")
 
-## Creating and Editing articles:
+## Creating and Editing articles
 
 They also can add new articles and edit existing ones:
 
 ![Add article page](/readme-screenshots/adding-article.png "Add article page of Gatopedia")
 
-linkre displayed:
+Gatopedia's editor is based on open-source tool [Editor.js](https://editorjs.io). The site also uses this tool to load articles. This is how articles are displayed:
 
 ![Article page](/readme-screenshots/article.png "Article page of Gatopedia")
 
-Users can also search for articles. Searching is only executed in article titles. It uses built-in search options that are available on MongoDB search indexes. Search view looks like this:
+Users can also search for articles. Searching is only executed in article titles. It uses built-in search options that are available on mongoose npm module.
 
 ![Search page](/readme-screenshots/search.png "Search page of Gatopedia")
-## Side menu options:
+## Side menu options
 
 About page:
 
@@ -58,7 +58,7 @@ Most popular page:
 
 ![Most popular page](/readme-screenshots/most-popular.png "Most popular page of Gatopedia")
 
-# Used technologies:
+# Used technologies
 
 ## Back-end:
 - MongoDB
@@ -112,5 +112,5 @@ Which will run the server. If everything went smoothly, Gatopedia should work on
 
     localhost:3000
 
-or simply click this [link](http://localhost:3000)
+or simply click this [link](http://localhost:3000). Now your Gatopedia is up and running. Have fun!
 
