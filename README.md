@@ -100,7 +100,13 @@ With all that ready, you can start setting up Gatopedia locally on your computer
     // password to that email account
     module.exports.hostEmailPassword = ""
 
+
+
 Fill empty quotation marks with your database connect link, chosen email address and its password (the code that Gmail generated). Afterwards, open a terminal in project directory and run command: 
+
+    npm install
+
+It will install all dependencies needed to launch Gatopedia. It may take some time. When its done, type:
 
     tsc
 
