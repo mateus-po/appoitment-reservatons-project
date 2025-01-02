@@ -5,6 +5,7 @@ var jwt = require('jsonwebtoken')
 var cookieParser = require('cookie-parser')
 var nodemailer = require('nodemailer')
 var { secretString, maxTokenAge, saltrounds, hostEmailAddress, hostEmailPassword } = require ("../globalVariables")
+require('dotenv').config()
 
 function createToken(id:string) : string {
     return jwt.sign({id}, secretString, {
@@ -16,8 +17,8 @@ function createToken(id:string) : string {
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: hostEmailAddress,
-        pass: hostEmailPassword
+        user: process.env.MAILER_ADDRESS,
+        pass: process.env.MAILER_PASSWORD
     }
 });
 
@@ -77,7 +78,7 @@ module.exports.signup_post = async (req:any, res:any) => {
 
     const mailConfigurations = {
   
-        from: hostEmailAddress,
+        from: process.env.MAILER_ADDRESS,
       
         to: email,
       
@@ -198,7 +199,7 @@ module.exports.forgotPassword_post = async (req:any, res:any) => {
 
         const mailConfigurations = {
     
-            from: hostEmailAddress,
+            from: process.env.MAILER_ADDRESS,
         
             to: email,
         

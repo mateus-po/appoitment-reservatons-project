@@ -218,5 +218,5 @@ module.exports.userEditAvatar_post = (req:any, res:any) => {
 
 module.exports.displayUsers_get = async (req:any, res:any) => {
     const users = await User.find({}, 'nickname description avatarPath')
-    res.render('user/users', {users})
+    res.json(users)
 }

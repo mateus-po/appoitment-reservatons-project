@@ -4,14 +4,14 @@ var mongoose = require('mongoose')
 var { checkUser } = require('./middleware/authmiddleware')
 var cookies = require('cookie-parser')
 var fs = require('fs')
-var {tpmFolder, tmpFilesMaxAge, absolutePath, port, dbURI} = require("./globalVariables")
 var Img = require("./models/Image")
+require('dotenv').config()
 
 
 // all needed routers
 const authRouter = require("./routes/authRouter")
-const articlesRouter = require("./routes/articlesRouter")
 const usersRouter = require("./routes/usersRouter")
+const consultationsRouter = require('./routes/consultationRouter')
 
 
 const app = express()
@@ -32,31 +32,14 @@ app.use(cookies())
 app.use("*", checkUser)
 
 app.use('/auth', authRouter);
-app.use('/users', usersRouter)
-app.use('/', articlesRouter);
-
-async function garbage_collector_images() {
-    for await (const img of Img.find({hasArticle: false})) {
-        try {
-            // if an image is older than 24 hours 
-            if (Date.now() - img.uploadTime > 1000 * 60 * 60 * 24) {
-                fs.unlinkSync(absolutePath + "/public" + img.path)
-                await Img.findOneAndDelete({path: img.path})
-            }
-          } catch (err:any) {
-            console.log(err.message)
-          }
-    }
-}
+app.use('/users', usersRouter);
+app.use('/consultations', consultationsRouter)
 
 
-mongoose.connect(dbURI, {useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect(process.env.DB_URI, {useNewUrlParser: true, useUnifiedTopology: true})
 .then((result:any) => {
-    app.listen(port, () => {
-        console.log(`Listening on port: ${port}`)
-        
-        // deletes unwanted images every hour
-        setInterval(garbage_collector_images, 1000 * 60 * 60)
+    app.listen(process.env.PORT, () => {
+        console.log(`Listening on port: ${process.env.PORT}`)
     })
 })
 .catch((err:any) => console.log(err));
