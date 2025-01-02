@@ -3,6 +3,7 @@ const path = require('path')
 var mongoose = require('mongoose')
 var { checkUser } = require('./middleware/authmiddleware')
 var cookies = require('cookie-parser')
+var cors = require('cors')
 var fs = require('fs')
 var Img = require("./models/Image")
 require('dotenv').config()
@@ -27,6 +28,8 @@ app.use(express.json())
 
 // allows handling cookies via 'cookie-parser' module
 app.use(cookies())
+
+app.use(cors())
 
 // middleware function "checkUser" checks whether someone is logged in
 app.use("*", checkUser)
