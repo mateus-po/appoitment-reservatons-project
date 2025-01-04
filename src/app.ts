@@ -29,7 +29,10 @@ app.use(express.json())
 // allows handling cookies via 'cookie-parser' module
 app.use(cookies())
 
-app.use(cors())
+app.use(cors({
+    credentials:true,
+    origin:['http://localhost:4200']
+}))
 
 // middleware function "checkUser" checks whether someone is logged in
 app.use("*", checkUser)

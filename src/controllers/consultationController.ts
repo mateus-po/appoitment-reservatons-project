@@ -1,10 +1,36 @@
 var Consultation = require("../models/Consultation");
-const createConsultation = require('../services/consultations/createConsultation')
+const createConsultation = require("../services/consultations/createConsultation");
+var consulstationsForDoctor = require("../services/consultations/consulstationsForDoctor");
 import { Request, Response } from "express";
 
 module.exports.consultations_get = async (req: Request, res: Response) => {
   const all_consultations = await Consultation.find({});
   res.json(all_consultations);
+};
+
+module.exports.consultationsAsDoctor_get = async (
+  req: Request,
+  res: Response
+) => {
+  const { startDate, endDate } = req.query;
+  const user = res.locals.loggedUser;
+
+  if (user.role !== "doctor") {
+    res.json({
+      success: false,
+      message: "The currently logged user is not a doctor",
+    });
+    return;
+  }
+
+  const doctorId = user._id;
+  const consultations = await consulstationsForDoctor(
+    doctorId,
+    startDate,
+    endDate
+  );
+
+  res.json(consultations);
 };
 
 module.exports.createConsultation_post = async (

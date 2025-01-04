@@ -5,6 +5,7 @@ var jwt = require('jsonwebtoken')
 var cookieParser = require('cookie-parser')
 var nodemailer = require('nodemailer')
 var { secretString, maxTokenAge, saltrounds, hostEmailAddress, hostEmailPassword } = require ("../globalVariables")
+import { Request, Response } from "express";
 require('dotenv').config()
 
 function createToken(id:string) : string {
@@ -305,4 +306,19 @@ module.exports.forgotPasswordWithToken_post = async (req:any, res:any) => {
 
         })
     } 
+}
+
+module.exports.currentUser_get = (req: Request, res: Response) => {
+    if (!res.locals?.loggedUser) {
+        res.json()
+        return
+    }
+
+    const user = {
+        email: res.locals.loggedUser.email,
+        nickname: res.locals.loggedUser.nickname,
+        id: res.locals.loggedUser._id,
+        role: res.locals.loggedUser.role
+    }
+    res.json(user)
 }
