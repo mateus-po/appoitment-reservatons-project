@@ -1,7 +1,4 @@
-import { time } from "console";
-
 var Consultation = require("../../models/Consultation");
-var parseDate = require("./parseDate");
 var dayjs = require("dayjs");
 // @ts-ignore
 import dayjsPluginUTC from "dayjs-plugin-utc";
@@ -33,7 +30,7 @@ const createOneTimeConsultations = async (
       .add(offset, "minutes");
 
 
-    while( startDate.isBefore(endDate) || startDate.isSame(endDate)) {
+    while(startDate.isBefore(endDate)) {
         const newDate = startDate.toISOString().replace(/T.*/, '')
 
         if (!consultationsToCreate[newDate]) {

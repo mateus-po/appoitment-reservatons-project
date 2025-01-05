@@ -13,6 +13,11 @@ const ConsultationModel = new mongoose.Schema({
         type: mongoose.ObjectId,
         required: true
     },
+    type: {
+        type: String,
+        enum : ['consultation','absence'],
+        default: 'consultation'
+    },
     reservationId: {
         type: mongoose.ObjectId,
         required: false

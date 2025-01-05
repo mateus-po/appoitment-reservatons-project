@@ -34,6 +34,20 @@ module.exports.requireAuth = async (req:any, res:any, next:any) => {
     }
 }
 
+module.exports.requireAuthDoctor = async (req:any, res:any, next:any) => {
+    const user = res.locals.loggedUser;
+
+    if (user.role !== "doctor") {
+      res.status(403).json({
+        success: false,
+        message: "The currently logged user is not a doctor",
+      });
+      return;
+    }
+
+    next();
+}
+
 // chcecks the currently logged user and sends their data to the view
 module.exports.checkUser = async (req:any, res:any, next:any): Promise<void> => {
     const token = req.cookies.jwt
