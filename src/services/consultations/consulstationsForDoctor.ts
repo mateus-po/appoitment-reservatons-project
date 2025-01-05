@@ -1,12 +1,18 @@
 var Consultation = require("../../models/Consultation");
+var dayjs = require("dayjs");
+// @ts-ignore
+import dayjsPluginUTC from "dayjs-plugin-utc";
+dayjs.extend(dayjsPluginUTC);
 
 const consultationsForDoctor = async (
   doctorId: string,
   startDate: string,
   endDate: string
 ) => {
+  console.log(startDate, endDate)
   const start = new Date(startDate);
   const end = new Date(endDate);
+  
   const all_consultations = await Consultation.find({ doctorId });
   const consultationsSelectedPeriod = all_consultations.filter(
     (consultation: typeof Consultation) => {
@@ -19,7 +25,7 @@ const consultationsForDoctor = async (
             }:00.000Z`
         )
       );
-      return start <= consultationDate && consultationDate <= end;
+      return start.getTime() <= consultationDate.getTime() && consultationDate.getTime() <= end.getTime();
     }
   );
   return consultationsSelectedPeriod;

@@ -2,7 +2,7 @@ import { time } from "console";
 
 var Consultation = require("../../models/Consultation");
 var parseDate = require("./parseDate");
-const dayjs = require("dayjs");
+var dayjs = require("dayjs");
 // @ts-ignore
 import dayjsPluginUTC from "dayjs-plugin-utc";
 dayjs.extend(dayjsPluginUTC);
