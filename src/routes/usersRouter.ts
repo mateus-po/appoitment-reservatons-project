@@ -18,4 +18,6 @@ router.get('/profile/:username', userController.userPage_get)
 
 router.get('/', userController.displayUsers_get)
 
+router.get('/doctors', userController.doctors_get)
+
 module.exports = router

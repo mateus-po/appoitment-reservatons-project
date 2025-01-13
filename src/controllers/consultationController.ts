@@ -26,6 +26,21 @@ module.exports.consultationsAsDoctor_get = async (
   res.json(consultations);
 };
 
+module.exports.consultationsAsUser_get = async (
+  req: Request,
+  res: Response
+) => {
+  const { doctorId, startDate, endDate } = req.query;
+
+  const consultations = await consulstationsForDoctor(
+    doctorId,
+    startDate,
+    endDate
+  );
+
+  res.json(consultations);
+};
+
 module.exports.createConsultation_post = async (
   req: Request,
   res: Response

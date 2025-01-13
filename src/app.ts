@@ -13,6 +13,7 @@ require('dotenv').config()
 const authRouter = require("./routes/authRouter")
 const usersRouter = require("./routes/usersRouter")
 const consultationsRouter = require('./routes/consultationRouter')
+const reservationsRouter = require('./routes/reservationRouter')
 
 
 const app = express()
@@ -40,6 +41,7 @@ app.use("*", checkUser)
 app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 app.use('/consultations', consultationsRouter)
+app.use('/reservations', reservationsRouter)
 
 
 mongoose.connect(process.env.DB_URI, {useNewUrlParser: true, useUnifiedTopology: true})

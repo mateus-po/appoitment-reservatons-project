@@ -51,15 +51,13 @@ const createOneTimeConsultations = async (
       date: Object.keys(consultationsToCreate),
     });
 
-    const conflicting_constultations_exist = existing_consultations.some(
-      (c: any) => consultationsToCreate[c.date].includes(c.timeslot)
-    );
-
-    if (conflicting_constultations_exist) {
-      throw Error(
-        "There already exist consultations that conflict with the newly created ones"
-      );
+    for (let c of existing_consultations) {
+      if (consultationsToCreate[c.date].includes(c.timeslot)) {
+        const index = consultationsToCreate[c.date].indexOf(c.timeslot)
+        consultationsToCreate[c.date].splice(index, 1)
+      }
     }
+    
     let promises: Promise<Object>[] = []
     
     Object.entries(consultationsToCreate).forEach(([date, timeslots]) => {

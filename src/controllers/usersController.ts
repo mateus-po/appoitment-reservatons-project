@@ -5,6 +5,8 @@ var bcrypt = require('bcrypt')
 var fs = require('fs')
 var { secretString, saltrounds, absolutePath } = require('../globalVariables')
 var { isStrongPassword, isEmail } = require('validator')
+import { Request, Response } from "express";
+
 
 // displays a user page view with appropriate user data
 module.exports.userPage_get = async (req:any, res:any) => {
@@ -219,4 +221,12 @@ module.exports.userEditAvatar_post = (req:any, res:any) => {
 module.exports.displayUsers_get = async (req:any, res:any) => {
     const users = await User.find({}, 'nickname description avatarPath')
     res.json(users)
+}
+
+module.exports.doctors_get = async (req:Request, res:Response) => {
+    const users = await User.find({role: 'doctor'}, '_id nickname description role')
+    const response = users.map((u:any) => {
+        return {id: u._id, nickname: u.nickname, description: u.description, role: u.role}
+    })
+    res.json(response)
 }

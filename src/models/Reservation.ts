@@ -6,11 +6,7 @@ const ReservationModel = new mongoose.Schema({
     required: false,
     index: true,
   },
-  length: {
-    type: mongoose.Schema.Types.Int32,
-    required: true,
-  },
-  consulatationType: {
+  consultationType: {
     type: String,
     required: true,
   },
@@ -26,7 +22,7 @@ const ReservationModel = new mongoose.Schema({
       maxLength: 20,
     },
     age: {
-      type: mongoose.Schema.Types.Int32,
+      type: Number,
       required: true,
     },
   },
