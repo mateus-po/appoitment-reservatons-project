@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 var createReservation = require('../services/reservations/createReservation')
+var reservationTypes = require('../services/reservations/reservationTypes')
 var ServiceError = require('../services/errors/ServiceError')
 
 module.exports.createReservation_post = async (req: Request, res: Response) => {
@@ -19,4 +20,8 @@ module.exports.createReservation_post = async (req: Request, res: Response) => {
   res.json({what: 'a success'})
 
 
+};
+
+module.exports.getReservationTypes_get = (req: Request, res: Response) => {
+  res.json(reservationTypes())
 };
