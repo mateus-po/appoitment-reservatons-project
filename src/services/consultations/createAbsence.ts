@@ -1,4 +1,5 @@
 var Consultation = require("../../models/Consultation");
+var Reservation = require('../../models/Reservation')
 var dayjs = require("dayjs");
 // @ts-ignore
 import dayjsPluginUTC from "dayjs-plugin-utc";
@@ -47,32 +48,48 @@ const createAbsence = async (
     date: Object.keys(consultationsToCreate),
   });
 
-  const conflicting_consultations_without_reservation =
-    existing_consultations.filter(
-      (c: any) =>
-        consultationsToCreate[c.date].includes(c.timeslot) && !c.reservationId
-    );
+  const conflicting_consultations = existing_consultations.filter((c: any) =>
+    consultationsToCreate[c.date].includes(c.timeslot)
+  );
 
-  // TODO: find the conflicting consultations with reservations and cancel them
+  const reservation_ids = conflicting_consultations
+    .map((c: any) => c.reservationId)
+    .filter((n: any) => n)
+    .filter(onlyUnique);
 
-  await Consultation.deleteMany({
-    _id: conflicting_consultations_without_reservation.map((c: any) => c._id),
-  });
 
-  let promises: Promise<Object>[] = []
-    
-  Object.entries(consultationsToCreate).forEach(([date, timeslots]) => {
-      timeslots.forEach(t =>
-          promises.push(Consultation.create({
-              doctorId,
-              date: date,
-              timeslot: t,
-              type: 'absence'
-            }))
-      )
+  Reservation.find({_id: reservation_ids}).then((reservations:any) => {
+    for (let r of reservations) {
+      r.firstConsultationId = null
+      r.cancelled = true
+      r.save()
+    }
   })
 
-  await Promise.all(promises)
+  await Consultation.deleteMany({
+    _id: conflicting_consultations.map((c: any) => c._id),
+  });
+
+  let promises: Promise<Object>[] = [];
+
+  Object.entries(consultationsToCreate).forEach(([date, timeslots]) => {
+    timeslots.forEach((t) =>
+      promises.push(
+        Consultation.create({
+          doctorId,
+          date: date,
+          timeslot: t,
+          type: "absence",
+        })
+      )
+    );
+  });
+
+  await Promise.all(promises);
 };
+
+function onlyUnique(value: any, index: number, array: any[]) {
+  return array.indexOf(value) === index;
+}
 
 module.exports = createAbsence;

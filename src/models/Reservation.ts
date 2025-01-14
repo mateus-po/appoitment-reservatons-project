@@ -35,6 +35,11 @@ const ReservationModel = new mongoose.Schema({
     required: false,
     maxLength: 1000,
   },
+  cancelled: {
+    type: Boolean,
+    required: true,
+    default: false
+  }
 });
 
 var Reservation = mongoose.model("reservation", ReservationModel);
