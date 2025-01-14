@@ -1,13 +1,14 @@
 var jwt = require('jsonwebtoken')
 var User = require('../models/User')
 var { secretString, maxTokenAge } = require('../globalVariables')
+require('dotenv').config()
 
 // used to protect some views from being accessed by an unauhtorised users
 module.exports.requireAuth = async (req:any, res:any, next:any) => {
     const token = req.cookies.jwt
 
     if (token) {
-        jwt.verify(token, secretString, async (err:any, decodedToken:any): Promise<void> => {
+        jwt.verify(token, process.env.SECRET_STRING, async (err:any, decodedToken:any): Promise<void> => {
             if (err) {
                 res.redirect('/auth/login')
                 return
@@ -54,9 +55,9 @@ module.exports.checkUser = async (req:any, res:any, next:any): Promise<void> => 
 
     if (token) {
         // refresh cookies' expiry time
-        res.cookie('jwt', token, {httponly: true, maxAge: maxTokenAge * 1000,overwrite:true, secure:false})
+        res.cookie('jwt', token, {httponly: true, maxAge: parseInt(process.env.MAX_TOKEN_AGE ?? '') * 1000,overwrite:true, secure:false})
 
-        jwt.verify(token, secretString, async (err:any, decodedToken:any): Promise<void> => {
+        jwt.verify(token, process.env.SECRET_STRING, async (err:any, decodedToken:any): Promise<void> => {
             if (err) {
                 res.locals.loggedUser = null
                 next()

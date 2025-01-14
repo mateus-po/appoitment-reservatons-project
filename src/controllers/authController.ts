@@ -7,7 +7,7 @@ require('dotenv').config()
 
 function createToken(id:string) : string {
     return jwt.sign({id}, process.env.SECRET_STRING, {
-        expiresIn: process.env.MAX_TOKEN_AGE
+        expiresIn: parseInt(process.env.MAX_TOKEN_AGE ?? '')
     })
 }
 
