@@ -77,20 +77,21 @@ const createReservation = async (data: CreateReservationArguments) => {
     start = start.add(30, 'minutes')
   }
 
-  for (let c of consultationsToUpdate) {
-    const reservation = await Reservation.create({
-        consultationId: c._id,
-        consultationType,
-        patientData: {
-            name: patientName,
-            gender: patientGender,
-            age: patientAge
-        },
-        note: doctorNotes
-    })
-    c.reservationId = reservation._id
-    await c.save()
+  const reservation = await Reservation.create({
+    firstConsultationId: consultationsToUpdate[0]._id,
+    consultationLength,
+    consultationType,
+    patientData: {
+        name: patientName,
+        gender: patientGender,
+        age: patientAge
+    },
+    note: doctorNotes
+})
 
+  for (let c of consultationsToUpdate) {
+    c.reservationId = reservation._id
+    c.save()
   }
 };
 

@@ -1,10 +1,14 @@
 var mongoose = require("mongoose");
 
 const ReservationModel = new mongoose.Schema({
-  consultationId: {
+  firstConsultationId: {
     type: mongoose.ObjectId,
     required: false,
     index: true,
+  },
+  consultationLength: {
+    type: Number,
+    required: true
   },
   consultationType: {
     type: String,

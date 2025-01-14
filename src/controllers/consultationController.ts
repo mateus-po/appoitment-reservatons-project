@@ -1,6 +1,7 @@
 var Consultation = require("../models/Consultation");
 const createConsultation = require("../services/consultations/createConsultation");
 var consulstationsForDoctor = require("../services/consultations/consulstationsForDoctor");
+var consulstationsForUser = require("../services/consultations/consulstationsForUser");
 var createOneTimeConsultations = require("../services/consultations/createOneTimeConsultations");
 var createAbsence = require("../services/consultations/createAbsence");
 import { Request, Response } from "express";
@@ -32,7 +33,7 @@ module.exports.consultationsAsUser_get = async (
 ) => {
   const { doctorId, startDate, endDate } = req.query;
 
-  const consultations = await consulstationsForDoctor(
+  const consultations = await consulstationsForUser(
     doctorId,
     startDate,
     endDate
