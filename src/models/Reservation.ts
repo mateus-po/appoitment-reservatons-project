@@ -6,9 +6,27 @@ const ReservationModel = new mongoose.Schema({
     required: false,
     index: true,
   },
+  userId: {
+    type: mongoose.ObjectId,
+    required: true,
+    index: true,
+  },
+  doctorId: {
+    type: mongoose.ObjectId,
+    required: true,
+    index: true,
+  },
+  date: {
+    type: String,
+    required: true,
+  },
+  timeslot: {
+    type: Number,
+    required: true,
+  },
   consultationLength: {
     type: Number,
-    required: true
+    required: true,
   },
   consultationType: {
     type: String,
@@ -38,8 +56,8 @@ const ReservationModel = new mongoose.Schema({
   cancelled: {
     type: Boolean,
     required: true,
-    default: false
-  }
+    default: false,
+  },
 });
 
 var Reservation = mongoose.model("reservation", ReservationModel);

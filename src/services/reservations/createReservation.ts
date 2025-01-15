@@ -79,6 +79,10 @@ const createReservation = async (data: CreateReservationArguments) => {
 
   const reservation = await Reservation.create({
     firstConsultationId: consultationsToUpdate[0]._id,
+    userId,
+    doctorId,
+    date: consultationsToUpdate[0].date,
+    timeslot: consultationsToUpdate[0].timeslot,
     consultationLength,
     consultationType,
     patientData: {
