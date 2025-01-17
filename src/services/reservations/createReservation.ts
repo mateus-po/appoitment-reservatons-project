@@ -93,10 +93,16 @@ const createReservation = async (data: CreateReservationArguments) => {
     note: doctorNotes
 })
 
+
+
+  let promises: Promise<Object>[] = []
+    
   for (let c of consultationsToUpdate) {
     c.reservationId = reservation._id
-    c.save()
+    promises.push(c.save())
   }
+
+  await Promise.all(promises)
 };
 
 module.exports = createReservation;

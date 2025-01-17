@@ -1,6 +1,5 @@
 var jwt = require('jsonwebtoken')
 var User = require('../models/User')
-var { secretString, maxTokenAge } = require('../globalVariables')
 require('dotenv').config()
 
 // used to protect some views from being accessed by an unauhtorised users
