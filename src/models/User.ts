@@ -27,13 +27,11 @@ const UserModel = new mongoose.Schema({
         required: false,
         maxLength: 800
     },
-    avatarPath: {
+    role: {
         type: String,
-        required: false
-    },
-    recentlyEditedArticles: {
-        type: String,
-        required: false
+        required: true,
+        maxLength: 30,
+        default: 'user'
     }
 })
 
